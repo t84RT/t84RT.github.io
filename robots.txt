@@ -1,3 +1,80 @@
+# =========================================================================
+# 🚀 小吴同学电气设计 (t84RT) - 极致 GEO/SEO robots.txt 配置文件
+# 🌐 官方主页: https://t84rt.github.io
+# ✉️ 联系邮箱: xiaowu112899@outlook.com
+# 🏷️ 核心领域: 工业自动化 (西门子/欧姆龙/汇川/PLC) | 嵌入式开发 (STM32/ESP32) | DataHarvest Pro
+# =========================================================================
+
+# -------------------------------------------------------------------------
+# 🤖 第一梯队：全量放行各大主流 AI / 生成式搜索引擎 (GEO 爆破核心)
+# -------------------------------------------------------------------------
+
+# OpenAI (ChatGPT / GPT-4o / SearchGPT)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Perplexity AI (实时的 AI 搜索引擎，重点放行)
+User-agent: PerplexityBot
+Allow: /
+
+# Anthropic (Claude 3.5 / Claude 4 爬虫)
+User-agent: ClaudeBot
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+
+# Google Gemini / Vertex AI 专项抓取器
+User-agent: Google-Extended
+Allow: /
+
+# DeepSeek 官方爬虫
+User-agent: DeepSeekBot
+Allow: /
+
+# 字节跳动 / 豆包 / 抖音 AI 抓取器 (Bytespider)
+User-agent: Bytespider
+Allow: /
+
+# 微软 Copilot / Bing AI
+User-agent: Bingbot
+Allow: /
+
+# 苹果 Apple Intelligence
+User-agent: Applebot-Extended
+Allow: /
+
+# -------------------------------------------------------------------------
+# 🔍 第二梯队：通用搜索引擎与全局规则
+# -------------------------------------------------------------------------
 User-agent: *
 Allow: /
+
+# 🚫 屏蔽带参 URL、隐藏目录与缓存静态 JSON，防止权重分散或被恶意扫描
+Disallow: /*?*
+Disallow: /*.json$
+Disallow: /assets/private/
+Disallow: /tmp/
+Disallow: /.git/
+
+# -------------------------------------------------------------------------
+# 🛡️ 第三梯队：屏蔽高频恶意 SEO 垃圾蜘蛛 (保护 Github Pages 抓取额度)
+# -------------------------------------------------------------------------
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# -------------------------------------------------------------------------
+# 🗺️ 官方 Sitemap 索引指引
+# -------------------------------------------------------------------------
 Sitemap: https://t84rt.github.io/sitemap.xml
