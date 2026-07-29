@@ -2996,51 +2996,55 @@
 <script>
 (function() {
     const ul = document.getElementById('news-list');
-    const rollContainer = document.getElementById('news-roll');
 
-    fetch('https://api.github.com/repos/t84RT/t84RT/contents/docs/daily.md')
-        .then(res => {
-            if (!res.ok) throw new Error('API请求失败: ' + res.status);
-            return res.json();
-        })
-        .then(data => {
-            const content = atob(data.content.replace(/\n/g, ''));
-            const lines = content.split('\n');
-            const items = [];
-            for (const line of lines) {
-                // 匹配格式: "* 1. 标题 来源"
-                const match = line.match(/^\*\s+(\d+)\.\s+(.+?)\s+([^\s]+)$/);
-                if (match) {
-                    items.push({
-                        index: parseInt(match[1]),
-                        title: match[2].trim(),
-                        source: match[3].trim()
-                    });
-                }
+    fetch('https://api.github.com/repos/t84RT/t84RT/contents/docs/daily.md', {
+        headers: {
+            'Accept': 'application/vnd.github.v3+json',
+            'User-Agent': 't84RT-personal-website/1.0'
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('API请求失败: ' + res.status);
+        return res.json();
+    })
+    .then(data => {
+        const content = atob(data.content.replace(/\n/g, ''));
+        const lines = content.split('\n');
+        const items = [];
+        for (const line of lines) {
+            // 匹配格式: "* 1. 标题 来源"
+            const match = line.match(/^\*\s+(\d+)\.\s+(.+?)\s+([^\s]+)$/);
+            if (match) {
+                items.push({
+                    index: parseInt(match[1]),
+                    title: match[2].trim(),
+                    source: match[3].trim()
+                });
             }
+        }
 
-            if (items.length === 0) {
-                ul.innerHTML = '<li class="status-msg">📭 今日暂无热榜数据，请稍后刷新</li>';
-                return;
-            }
+        if (items.length === 0) {
+            ul.innerHTML = '<li class="status-msg">📭 今日暂无热榜数据，请稍后刷新</li>';
+            return;
+        }
 
-            const display = items.slice(0, 60);
-            const duplicated = display.slice(0, 12);
-            const all = [...display, ...duplicated];
+        const display = items.slice(0, 60);
+        const duplicated = display.slice(0, 12);
+        const all = [...display, ...duplicated];
 
-            ul.innerHTML = all.map(item =>
-                `<li><span>🔹 ${item.index}. ${item.title}</span><span class="source-tag">${item.source}</span></li>`
-            ).join('');
+        ul.innerHTML = all.map(item =>
+            `<li><span>🔹 ${item.index}. ${item.title}</span><span class="source-tag">${item.source}</span></li>`
+        ).join('');
 
-            // 如果条目太少，取消动画
-            if (all.length < 20) {
-                ul.style.animation = 'none';
-            }
-        })
-        .catch(err => {
-            console.warn('热榜加载失败:', err);
-            ul.innerHTML = `<li class="status-msg">⚠️ 加载失败，请刷新重试<br><span style="font-size:12px;color:#94a3b8;">${err.message}</span></li>`;
-        });
+        // 如果条目太少，取消动画
+        if (all.length < 20) {
+            ul.style.animation = 'none';
+        }
+    })
+    .catch(err => {
+        console.warn('热榜加载失败:', err);
+        ul.innerHTML = `<li class="status-msg">⚠️ 加载失败，请刷新重试<br><span style="font-size:12px;color:#94a3b8;">${err.message}</span></li>`;
+    });
 })();
 </script>
         </section>
