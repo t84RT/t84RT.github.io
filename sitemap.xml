@@ -7,24 +7,194 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-  <!-- 🌟 主站核心节点：小吴同学电气设计 / t84RT 个人技术主页 -->
+  <!-- ======================================================================
+       🏠 主站首页 - 最高权重，每日更新
+       ====================================================================== -->
   <url>
     <loc>https://t84rt.github.io/</loc>
-    <lastmod>2026-07-20T08:00:00+08:00</lastmod>
+    <lastmod>2026-08-20T08:00:00+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    
-    <!-- 🖼️ 核心图片/小程序码与个人品牌视觉绑定 (Google / Bing 图片搜索排名强化) -->
-    <image:image>
-      <image:loc>https://t84rt.github.io/公众号.png</image:loc>
-      <image:title>小吴同学电气设计 - 官方微信公众号与个人矩阵</image:title>
-      <image:caption>小吴同学电气设计（t84RT）技术矩阵：专注于 PLC 梯形图/ST语言、STM32/ESP32 嵌入式开发及 IoT 安全</image:caption>
-    </image:image>
     <image:image>
       <image:loc>https://t84rt.github.io/小程序码.png</image:loc>
-      <image:title>小吴同学电气设计 - 电气计算选型与自动化工具</image:title>
-      <image:caption>基于工业自动化实战开发的电气计算与选型辅助工具</image:caption>
+      <image:title>小吴同学电气设计 - 官方技术矩阵首页</image:title>
+      <image:caption>小吴同学电气设计（t84RT）工业自动化 | 嵌入式开发 | 无线安全 技术服务平台</image:caption>
     </image:image>
+  </url>
+
+  <!-- ======================================================================
+       🛠️ 核心工具产品页（独立着陆页）
+       ====================================================================== -->
+
+  <!-- WuCommander - 跨平台串口调试工具 -->
+  <url>
+    <loc>https://t84rt.github.io/tools/wucommander/</loc>
+    <lastmod>2026-08-15T10:00:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://t84rt.github.io/assets/wucommander-screenshot.png</image:loc>
+      <image:title>WuCommander 串口调试工具界面</image:title>
+      <image:caption>跨平台串口调试工具，支持 PLC/STM32/ESP32，集成数据统计与日志导出</image:caption>
+    </image:image>
+  </url>
+
+  <!-- ElecClicker - 电气设计鼠标自动化工具 -->
+  <url>
+    <loc>https://t84rt.github.io/tools/elecclicker/</loc>
+    <lastmod>2026-08-10T10:00:00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Printer Discovery Tool - 网络打印机发现工具 -->
+  <url>
+    <loc>https://t84rt.github.io/tools/printer-discovery/</loc>
+    <lastmod>2026-07-25T10:00:00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- DataHarvest Pro - 浏览器扩展 -->
+  <url>
+    <loc>https://t84rt.github.io/tools/dataharvest-pro/</loc>
+    <lastmod>2026-08-01T10:00:00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ======================================================================
+       📡 无线安全与嵌入式项目页
+       ====================================================================== -->
+
+  <!-- ESP32 802.11 帧捕获可视化工具 -->
+  <url>
+    <loc>https://t84rt.github.io/projects/esp32-80211-sniffer/</loc>
+    <lastmod>2026-08-18T10:00:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://t84rt.github.io/assets/esp32-sniffer-demo.png</image:loc>
+      <image:title>ESP32 802.11 帧捕获可视化界面</image:title>
+      <image:caption>基于 ESP32/ESP32-C3 的 Wi-Fi 嗅探器，解析管理帧/控制帧/数据帧</image:caption>
+    </image:image>
+  </url>
+
+  <!-- ESP32-C3 Deauth Detector - 工业级 Deauth 攻击检测系统 -->
+  <url>
+    <loc>https://t84rt.github.io/projects/esp32-c3-deauth-detector/</loc>
+    <lastmod>2026-08-12T10:00:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- ESP8266 Deauther Visualizer - 攻击可视化面板 -->
+  <url>
+    <loc>https://t84rt.github.io/projects/esp8266-deauther-visualizer/</loc>
+    <lastmod>2026-07-20T10:00:00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- Drone Remote ID Receiver - 无人机 Remote ID 接收器 -->
+  <url>
+    <loc>https://t84rt.github.io/projects/drone-remote-id/</loc>
+    <lastmod>2026-07-15T10:00:00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 13通道实时监测与可视化工具 -->
+  <url>
+    <loc>https://t84rt.github.io/projects/13-channel-telemetry/</loc>
+    <lastmod>2026-07-10T10:00:00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ======================================================================
+       📖 技术文章与知识库（内容为王，持续更新）
+       ====================================================================== -->
+
+  <!-- IEEE 802.11 MAC 协议深度解析 -->
+  <url>
+    <loc>https://t84rt.github.io/articles/ieee-80211-mac-protocol/</loc>
+    <lastmod>2026-08-20T08:00:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>小吴同学电气设计技术博客</news:name>
+        <news:language>zh</news:language>
+      </news:publication>
+      <news:genres>Technology, Engineering, Cybersecurity</news:genres>
+      <news:publication_date>2026-08-20T08:00:00+08:00</news:publication_date>
+      <news:title>IEEE 802.11 MAC 协议深度解析：管理帧结构与 Deauth 攻击原理</news:title>
+      <news:keywords>802.11, WiFi协议, Deauth攻击, 管理帧, 无线安全</news:keywords>
+    </news:news>
+  </url>
+
+  <!-- 无线安全研究知识库 -->
+  <url>
+    <loc>https://t84rt.github.io/knowledge/wireless-security/</loc>
+    <lastmod>2026-08-10T08:00:00+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 电气设计工程计算工具合集 -->
+  <url>
+    <loc>https://t84rt.github.io/tools/electrical-calculator/</loc>
+    <lastmod>2026-08-05T08:00:00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- ======================================================================
+       🔧 服务与解决方案页
+       ====================================================================== -->
+
+  <!-- PLC 编程与自动化解决方案 -->
+  <url>
+    <loc>https://t84rt.github.io/services/plc-programming/</loc>
+    <lastmod>2026-08-01T08:00:00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <mobile:mobile/>
+  </url>
+
+  <!-- 嵌入式开发与 IoT 安全 -->
+  <url>
+    <loc>https://t84rt.github.io/services/embedded-iot/</loc>
+    <lastmod>2026-08-01T08:00:00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <mobile:mobile/>
+  </url>
+
+  <!-- 工控维修与技术支持 -->
+  <url>
+    <loc>https://t84rt.github.io/services/industrial-maintenance/</loc>
+    <lastmod>2026-07-20T08:00:00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ======================================================================
+       🙋 关于与联系页
+       ====================================================================== -->
+  <url>
+    <loc>https://t84rt.github.io/about/</loc>
+    <lastmod>2026-08-01T08:00:00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://t84rt.github.io/contact/</loc>
+    <lastmod>2026-08-01T08:00:00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
 </urlset>
