@@ -1,97 +1,134 @@
-# =========================================================================
-# 🚀 小吴同学电气设计 (t84RT) - 极致 GEO/SEO robots.txt 配置文件
-# 🌐 官方主页: https://t84rt.github.io
-# ✉️ 联系邮箱: xiaowu112899@outlook.com
-# 🏷️ 核心领域: 工业自动化 (西门子/欧姆龙/汇川/PLC) | 嵌入式开发 (STM32/ESP32) | DataHarvest Pro
-# =========================================================================
 
-# -------------------------------------------------------------------------
-# 🛡️ 第一梯队：屏蔽高频恶意 SEO 垃圾蜘蛛（必须放在通用规则之前）
-# -------------------------------------------------------------------------
+# 1. AhrefsBot - 全球最大的SEO工具提供商，其爬虫极度活跃，经常抓取全站所有链接，
+#    包括重复内容和参数页面，对个人站点造成较大负担。完全屏蔽。
 User-agent: AhrefsBot
 Disallow: /
 
+# 2. SemrushBot - 另一款主流SEO分析工具，行为与Ahrefs类似，同样消耗大量资源。
 User-agent: SemrushBot
 Disallow: /
 
+# 3. MJ12bot - 由Majestic SEO运营，以深度抓取和链接分析著称，但频率过高。
 User-agent: MJ12bot
 Disallow: /
 
+# 4. DotBot - 由DotDash (现为IAC) 运营的爬虫，用于内容聚合，但抓取量大且无差别。
 User-agent: DotBot
 Disallow: /
 
+# 5. MauiBot - 来自Maui SEO的爬虫，常用于反向链接检查，对个人站点无价值。
 User-agent: MauiBot
 Disallow: /
 
+# 6. ZoominfoBot - 来自ZoomInfo的商业数据采集器，可能抓取联系信息，屏蔽以保护隐私。
 User-agent: ZoominfoBot
 Disallow: /
 
-# -------------------------------------------------------------------------
-# 🤖 第二梯队：全量放行各大主流 AI / 生成式搜索引擎 (GEO 爆破核心)
-# -------------------------------------------------------------------------
+# 7. BLEXBot - 用于数据挖掘的爬虫，经常触发大量404，屏蔽。
+User-agent: BLEXBot
+Disallow: /
 
-# OpenAI (ChatGPT / GPT-4o / SearchGPT)
+# 8. DataForSeoBot - 来自DataForSEO的数据采集服务，屏蔽以节省资源。
+User-agent: DataForSeoBot
+Disallow: /
+
+# 9. YandexBot - 俄语搜索引擎，其抓取行为有时过于激进，对中文站点价值有限。
+#    为了节省资源，我们选择屏蔽，但也可视情况放行。此处选择屏蔽。
+User-agent: YandexBot
+Disallow: /
+
+# 10. Baiduspider - 百度爬虫，由于GitHub Pages在中国大陆访问不稳定，且百度抓取策略
+#     常导致大量无效请求，故屏蔽。若有需要可单独放行。
+User-agent: Baiduspider
+Disallow: /
+
+# ----------------------------------------------------------------------------
+#  🤖 第二梯队：全量放行各大主流 AI / 生成式搜索引擎 (GEO 爆破核心)
+#  原因: 这些AI爬虫是未来搜索流量的重要来源，必须完全开放，确保内容被索引。
+#  它们遵守robots.txt，且抓取频率合理，不会对站点造成过载。
+# ----------------------------------------------------------------------------
+
+# OpenAI (ChatGPT / GPT-4o / SearchGPT) - 目前最具影响力的AI模型，放行以提升可见度。
 User-agent: GPTBot
 Allow: /
 
+# ChatGPT-User - 用于ChatGPT用户插件和浏览功能的抓取，放行以支持实时检索。
 User-agent: ChatGPT-User
 Allow: /
 
-# Perplexity AI (实时的 AI 搜索引擎，重点放行)
+# Perplexity AI - 实时AI搜索引擎，增长迅速，放行以获取高质量推荐流量。
 User-agent: PerplexityBot
 Allow: /
 
-# Anthropic (Claude 3.5 / Claude 4 爬虫)
+# Anthropic (Claude 3.5 / Claude 4) - 与OpenAI同等重要的AI模型，必须放行。
 User-agent: ClaudeBot
 Allow: /
 User-agent: anthropic-ai
 Allow: /
 
-# Google Gemini / Vertex AI 专项抓取器
+# Google Gemini / Vertex AI - Google的AI抓取器，用于增强其AI搜索结果，放行。
 User-agent: Google-Extended
 Allow: /
 
-# DeepSeek 官方爬虫
+# DeepSeek - 中国领先的AI公司，其爬虫DeepSeekBot已公开，放行以支持国内AI生态。
 User-agent: DeepSeekBot
 Allow: /
 
-# 字节跳动 / 豆包 / 抖音 AI 抓取器 (Bytespider)
+# 字节跳动 / 豆包 / 抖音 AI 抓取器 (Bytespider) - 国内流量巨头，放行以增加曝光。
 User-agent: Bytespider
 Allow: /
 
-# 微软 Copilot / Bing AI
+# 微软 Copilot / Bing AI - Bing的AI增强搜索，放行以覆盖微软生态。
 User-agent: Bingbot
 Allow: /
 
-# 苹果 Apple Intelligence
+# 苹果 Apple Intelligence - 苹果的AI抓取器，用于Siri和系统智能，放行以覆盖苹果用户。
 User-agent: Applebot-Extended
 Allow: /
 
-# 新增：Cohere AI (常用于 RAG 检索)
+# Cohere AI - 专注于RAG和NLP的AI公司，其爬虫用于训练和检索，放行。
 User-agent: Cohere-AI
 Allow: /
 
-# 新增：Amazonbot (Alexa 搜索)
+# Amazonbot - Amazon的Alexa和搜索爬虫，放行以支持亚马逊生态的索引。
 User-agent: Amazonbot
 Allow: /
 
-# -------------------------------------------------------------------------
-# 🔍 第三梯队：通用搜索引擎与全局规则（放在最后，作为兜底）
-# -------------------------------------------------------------------------
+# Facebook External Hit - Facebook的社交分享抓取器，放行以确保链接预览正常。
+User-agent: FacebookExternalHit
+Allow: /
+
+# Twitterbot - Twitter/X的分享抓取器，放行以确保卡片预览正常。
+User-agent: Twitterbot
+Allow: /
+
+# ----------------------------------------------------------------------------
+#  🔍 第三梯队：通用搜索引擎与全局规则（放在最后，作为兜底）
+#  此规则适用于所有未明确列出的User-agent，包括常规搜索引擎和未知爬虫。
+#  我们允许它们抓取，但通过Disallow限制一些无意义的路径。
+# ----------------------------------------------------------------------------
 User-agent: *
 Allow: /
 
-# 🚫 屏蔽带参 URL、隐藏目录与缓存静态 JSON，防止权重分散或被恶意扫描
+# 限制带查询参数的URL (如 ?page=2&sort=desc) ，避免产生无限多的重复页面。
+# 这些动态URL通常不被搜索引擎青睐，且会浪费抓取配额。
 Disallow: /*?*
-Disallow: /*.json$
+
+# 禁止抓取临时文件和备份目录
 Disallow: /assets/private/
 Disallow: /tmp/
 Disallow: /.git/
+Disallow: /backup/
+Disallow: /temp/
 
 # 可选：限制通用爬虫抓取速度（单位：秒，非强制，但被部分爬虫遵守）
+# 设置 Crawl-delay 为 1 秒，可有效降低服务器瞬时压力，尤其对GitHub Pages免费托管非常友好。
 Crawl-delay: 1
 
-# -------------------------------------------------------------------------
-# 🗺️ 官方 Sitemap 索引指引
-# -------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+#  🗺️ 官方 Sitemap 索引指引
+#  明确告诉爬虫Sitemap位置，以便它们高效地发现所有页面。
+# ----------------------------------------------------------------------------
 Sitemap: https://t84rt.github.io/sitemap.xml
+Sitemap: https://t84rt.github.io/sitemap-news.xml   # (预留，暂未使用)
+
