@@ -7,194 +7,289 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-  <!-- ======================================================================
-       🏠 主站首页 - 最高权重，每日更新
-       ====================================================================== -->
-  <url>
-    <loc>https://t84rt.github.io/</loc>
-    <lastmod>2026-08-20T08:00:00+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-    <image:image>
-      <image:loc>https://t84rt.github.io/小程序码.png</image:loc>
-      <image:title>小吴同学电气设计 - 官方技术矩阵首页</image:title>
-      <image:caption>小吴同学电气设计（t84RT）工业自动化 | 嵌入式开发 | 无线安全 技术服务平台</image:caption>
-    </image:image>
-  </url>
+    <!-- ======================================================================
+         站点地图说明:
+         本文件列出了小吴同学电气设计网站的所有重要页面，共计19个URL。
+         每个URL都标注了最后修改时间、更新频率、优先级，以及扩展信息（图片、新闻、移动端）。
+         搜索引擎会优先抓取 priority 高的页面，并按照 changefreq 决定重新抓取周期。
+         所有时间均使用 UTC+8 时区（北京时间），格式为 W3C 标准。
+         ====================================================================== -->
 
-  <!-- ======================================================================
-       🛠️ 核心工具产品页（独立着陆页）
-       ====================================================================== -->
+    <!-- ======================================================================
+         1. 首页 (优先级最高)
+         描述: 技术服务平台首页，包含品牌介绍、核心工具入口、最新动态、技术手册总览。
+         关键词: 小吴同学电气设计, PLC编程, ESP32开发, 工控自动化, 电气计算
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/</loc>
+        <lastmod>2026-08-20T08:00:00+08:00</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://t84rt.github.io/小程序码.png</image:loc>
+            <image:title>小吴同学电气设计 - 官方技术矩阵首页</image:title>
+            <image:caption>小吴同学电气设计（t84RT）工业自动化 | 嵌入式开发 | 无线安全 技术服务平台</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://t84rt.github.io/推广.png</image:loc>
+            <image:title>小吴同学电气设计 - 微信公众号二维码</image:title>
+            <image:caption>关注公众号，获取更多技术干货与工具更新</image:caption>
+        </image:image>
+    </url>
 
-  <!-- WuCommander - 跨平台串口调试工具 -->
-  <url>
-    <loc>https://t84rt.github.io/tools/wucommander/</loc>
-    <lastmod>2026-08-15T10:00:00+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <image:image>
-      <image:loc>https://t84rt.github.io/assets/wucommander-screenshot.png</image:loc>
-      <image:title>WuCommander 串口调试工具界面</image:title>
-      <image:caption>跨平台串口调试工具，支持 PLC/STM32/ESP32，集成数据统计与日志导出</image:caption>
-    </image:image>
-  </url>
+    <!-- ======================================================================
+         2. WuCommander 串口调试工具页
+         描述: 跨平台串口调试工具，支持PLC/STM32/ESP32，集成数据统计、日志导出、虚拟终端。
+         关键词: 串口调试工具, PLC调试, 跨平台, Python, Tkinter
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/tools/wucommander/</loc>
+        <lastmod>2026-08-15T10:00:00+08:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+        <image:image>
+            <image:loc>https://t84rt.github.io/assets/wucommander-screenshot.png</image:loc>
+            <image:title>WuCommander 主界面截图</image:title>
+            <image:caption>WuCommander 跨平台串口调试工具主界面，显示数据接收窗口和发送控制区</image:caption>
+        </image:image>
+        <mobile:mobile/>
+    </url>
 
-  <!-- ElecClicker - 电气设计鼠标自动化工具 -->
-  <url>
-    <loc>https://t84rt.github.io/tools/elecclicker/</loc>
-    <lastmod>2026-08-10T10:00:00+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
+    <!-- ======================================================================
+         3. ElecClicker 鼠标自动化工具页
+         描述: 专为电气设计、PLC编程、工控调试设计的鼠标自动化工具，支持单次、连续、多点点击。
+         关键词: 鼠标自动化, 电气设计, PLC编程, 点击器, Windows工具
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/tools/elecclicker/</loc>
+        <lastmod>2026-08-10T10:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.85</priority>
+        <mobile:mobile/>
+    </url>
 
-  <!-- Printer Discovery Tool - 网络打印机发现工具 -->
-  <url>
-    <loc>https://t84rt.github.io/tools/printer-discovery/</loc>
-    <lastmod>2026-07-25T10:00:00+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+    <!-- ======================================================================
+         4. Printer Discovery Tool 网络打印机发现工具
+         描述: 通过TCP端口扫描、SNMP、mDNS/Bonjour协议自动发现局域网内的网络打印机。
+         关键词: 打印机发现, 网络扫描, SNMP, mDNS, 局域网工具
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/tools/printer-discovery/</loc>
+        <lastmod>2026-07-25T10:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
 
-  <!-- DataHarvest Pro - 浏览器扩展 -->
-  <url>
-    <loc>https://t84rt.github.io/tools/dataharvest-pro/</loc>
-    <lastmod>2026-08-01T10:00:00+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+    <!-- ======================================================================
+         5. DataHarvest Pro 浏览器扩展页
+         描述: Edge浏览器扩展，帮助用户高效搜索和收集资料，提升工作效率。
+         关键词: 浏览器扩展, Edge扩展, 资料搜索, 效率工具
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/tools/dataharvest-pro/</loc>
+        <lastmod>2026-08-01T10:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
 
-  <!-- ======================================================================
-       📡 无线安全与嵌入式项目页
-       ====================================================================== -->
+    <!-- ======================================================================
+         6. 电气计算工具合集
+         描述: 包含风机性能计算、电机选型、电缆截面计算、变压器容量设计、保护整定等在线计算器。
+         关键词: 电气计算, 风机计算, 电机选型, 电缆计算, 变压器设计
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/tools/electrical-calculator/</loc>
+        <lastmod>2026-08-05T08:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.85</priority>
+        <mobile:mobile/>
+    </url>
 
-  <!-- ESP32 802.11 帧捕获可视化工具 -->
-  <url>
-    <loc>https://t84rt.github.io/projects/esp32-80211-sniffer/</loc>
-    <lastmod>2026-08-18T10:00:00+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-    <image:image>
-      <image:loc>https://t84rt.github.io/assets/esp32-sniffer-demo.png</image:loc>
-      <image:title>ESP32 802.11 帧捕获可视化界面</image:title>
-      <image:caption>基于 ESP32/ESP32-C3 的 Wi-Fi 嗅探器，解析管理帧/控制帧/数据帧</image:caption>
-    </image:image>
-  </url>
+    <!-- ======================================================================
+         7. ESP32 802.11 帧捕获可视化工具
+         描述: 基于ESP32/ESP32-C3的Wi-Fi嗅探器，捕获并解析802.11管理帧/控制帧/数据帧，配套Python GUI。
+         关键词: ESP32, Wi-Fi嗅探, 802.11, 帧捕获, 无线安全
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/projects/esp32-80211-sniffer/</loc>
+        <lastmod>2026-08-18T10:00:00+08:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.85</priority>
+        <image:image>
+            <image:loc>https://t84rt.github.io/assets/esp32-sniffer-demo.png</image:loc>
+            <image:title>ESP32 帧捕获可视化界面</image:title>
+            <image:caption>ESP32 802.11 帧捕获工具实时显示捕获到的信标帧、探测请求帧等管理帧信息</image:caption>
+        </image:image>
+        <mobile:mobile/>
+    </url>
 
-  <!-- ESP32-C3 Deauth Detector - 工业级 Deauth 攻击检测系统 -->
-  <url>
-    <loc>https://t84rt.github.io/projects/esp32-c3-deauth-detector/</loc>
-    <lastmod>2026-08-12T10:00:00+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
+    <!-- ======================================================================
+         8. ESP32-C3 Deauth Detector 工业级Deauth攻击检测系统
+         描述: 被动监听2.4GHz管理帧，自适应基线学习，实时检测Wi-Fi Deauth攻击，降低误报。
+         关键词: ESP32-C3, Deauth检测, Wi-Fi安全, 入侵检测, 异常检测
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/projects/esp32-c3-deauth-detector/</loc>
+        <lastmod>2026-08-12T10:00:00+08:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.85</priority>
+        <mobile:mobile/>
+    </url>
 
-  <!-- ESP8266 Deauther Visualizer - 攻击可视化面板 -->
-  <url>
-    <loc>https://t84rt.github.io/projects/esp8266-deauther-visualizer/</loc>
-    <lastmod>2026-07-20T10:00:00+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
+    <!-- ======================================================================
+         9. ESP8266 Deauther Visualizer 攻击可视化面板
+         描述: ESP8266 Deauther攻击的可视化监控面板，实时展示攻击目标、信号强度与数据包统计。
+         关键词: ESP8266, Deauther, 可视化, Wi-Fi攻击, 教育演示
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/projects/esp8266-deauther-visualizer/</loc>
+        <lastmod>2026-07-20T10:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.75</priority>
+    </url>
 
-  <!-- Drone Remote ID Receiver - 无人机 Remote ID 接收器 -->
-  <url>
-    <loc>https://t84rt.github.io/projects/drone-remote-id/</loc>
-    <lastmod>2026-07-15T10:00:00+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
+    <!-- ======================================================================
+         10. Drone Remote ID Receiver 无人机Remote ID接收器
+         描述: 基于ESP32检测ASTM F3411/Open Drone ID（WiFi/BLE），配套macOS应用实时显示。
+         关键词: 无人机, Remote ID, ASTM F3411, ESP32, 蓝牙, WiFi
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/projects/drone-remote-id/</loc>
+        <lastmod>2026-07-15T10:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
 
-  <!-- 13通道实时监测与可视化工具 -->
-  <url>
-    <loc>https://t84rt.github.io/projects/13-channel-telemetry/</loc>
-    <lastmod>2026-07-10T10:00:00+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
+    <!-- ======================================================================
+         11. 13通道实时监测与可视化工具
+         描述: 开源遥测仪表板，支持UART、BLE、MQTT、Modbus、CAN Bus等多种协议。
+         关键词: 遥测, 仪表板, UART, BLE, MQTT, Modbus, CAN
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/projects/13-channel-telemetry/</loc>
+        <lastmod>2026-07-10T10:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
 
-  <!-- ======================================================================
-       📖 技术文章与知识库（内容为王，持续更新）
-       ====================================================================== -->
+    <!-- ======================================================================
+         12. IEEE 802.11 MAC协议深度解析文章
+         描述: 详细解析802.11 MAC帧结构，包括管理帧、控制帧、数据帧，以及Deauth攻击原理。
+         关键词: 802.11, MAC协议, 管理帧, Deauth攻击, 无线协议
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/articles/ieee-80211-mac-protocol/</loc>
+        <lastmod>2026-08-20T08:00:00+08:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <news:news>
+            <news:publication>
+                <news:name>小吴同学电气设计技术博客</news:name>
+                <news:language>zh</news:language>
+            </news:publication>
+            <news:genres>Technology, Engineering, Cybersecurity</news:genres>
+            <news:publication_date>2026-08-20T08:00:00+08:00</news:publication_date>
+            <news:title>IEEE 802.11 MAC 协议深度解析：管理帧结构与 Deauth 攻击原理</news:title>
+            <news:keywords>802.11, WiFi协议, Deauth攻击, 管理帧, 无线安全</news:keywords>
+        </news:news>
+    </url>
 
-  <!-- IEEE 802.11 MAC 协议深度解析 -->
-  <url>
-    <loc>https://t84rt.github.io/articles/ieee-80211-mac-protocol/</loc>
-    <lastmod>2026-08-20T08:00:00+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <news:news>
-      <news:publication>
-        <news:name>小吴同学电气设计技术博客</news:name>
-        <news:language>zh</news:language>
-      </news:publication>
-      <news:genres>Technology, Engineering, Cybersecurity</news:genres>
-      <news:publication_date>2026-08-20T08:00:00+08:00</news:publication_date>
-      <news:title>IEEE 802.11 MAC 协议深度解析：管理帧结构与 Deauth 攻击原理</news:title>
-      <news:keywords>802.11, WiFi协议, Deauth攻击, 管理帧, 无线安全</news:keywords>
-    </news:news>
-  </url>
+    <!-- ======================================================================
+         13. 无线安全研究知识库
+         描述: 系统性整理802.11协议族安全架构、管理帧漏洞及纵深防御策略，包含实验代码。
+         关键词: 无线安全, 知识库, 802.11, 防御策略, 实验平台
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/knowledge/wireless-security/</loc>
+        <lastmod>2026-08-10T08:00:00+08:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
 
-  <!-- 无线安全研究知识库 -->
-  <url>
-    <loc>https://t84rt.github.io/knowledge/wireless-security/</loc>
-    <lastmod>2026-08-10T08:00:00+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
+    <!-- ======================================================================
+         14. AI辅助PLC编程方法论文章
+         描述: 探讨如何利用GPT、Claude等大模型辅助PLC编程，包括RAG、提示词工程、多智能体协作。
+         关键词: AI编程, PLC, 大模型, RAG, 提示词工程
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/articles/ai-plc-programming/</loc>
+        <lastmod>2026-08-15T08:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.75</priority>
+    </url>
 
-  <!-- 电气设计工程计算工具合集 -->
-  <url>
-    <loc>https://t84rt.github.io/tools/electrical-calculator/</loc>
-    <lastmod>2026-08-05T08:00:00+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-  </url>
+    <!-- ======================================================================
+         15. 锂电设备与BMS设计指南
+         描述: 涵盖锂电池生产工艺、BMS架构设计、电池参数计算、热管理与安全防护。
+         关键词: 锂电池, BMS, 电池管理, 热管理, 储能系统
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/articles/lithium-battery-bms/</loc>
+        <lastmod>2026-08-10T08:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.75</priority>
+    </url>
 
-  <!-- ======================================================================
-       🔧 服务与解决方案页
-       ====================================================================== -->
+    <!-- ======================================================================
+         16. PLC编程与自动化解决方案（服务页）
+         描述: 提供西门子、三菱、欧姆龙、汇川等品牌PLC编程、调试、技术支持服务。
+         关键词: PLC编程, 自动化解决方案, 西门子, 三菱, 工控
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/services/plc-programming/</loc>
+        <lastmod>2026-08-01T08:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <mobile:mobile/>
+    </url>
 
-  <!-- PLC 编程与自动化解决方案 -->
-  <url>
-    <loc>https://t84rt.github.io/services/plc-programming/</loc>
-    <lastmod>2026-08-01T08:00:00+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <mobile:mobile/>
-  </url>
+    <!-- ======================================================================
+         17. 嵌入式开发与IoT安全（服务页）
+         描述: 提供ESP32/STM32开发、PCB设计、物联网设备安全评估、渗透测试等服务。
+         关键词: 嵌入式开发, IoT安全, ESP32, STM32, 渗透测试
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/services/embedded-iot/</loc>
+        <lastmod>2026-08-01T08:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <mobile:mobile/>
+    </url>
 
-  <!-- 嵌入式开发与 IoT 安全 -->
-  <url>
-    <loc>https://t84rt.github.io/services/embedded-iot/</loc>
-    <lastmod>2026-08-01T08:00:00+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <mobile:mobile/>
-  </url>
+    <!-- ======================================================================
+         18. 工控维修与技术支持（服务页）
+         描述: 提供工业设备维修、电路故障排查、远程指导、电气咨询等服务。
+         关键词: 工控维修, 电路维修, 技术支持, 故障排查
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/services/industrial-maintenance/</loc>
+        <lastmod>2026-07-20T08:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
 
-  <!-- 工控维修与技术支持 -->
-  <url>
-    <loc>https://t84rt.github.io/services/industrial-maintenance/</loc>
-    <lastmod>2026-07-20T08:00:00+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
+    <!-- ======================================================================
+         19. 关于页面
+         描述: 介绍小吴同学电气设计的品牌故事、团队成员、使命愿景。
+         关键词: 关于我们, 品牌故事, 团队介绍
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/about/</loc>
+        <lastmod>2026-08-01T08:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
 
-  <!-- ======================================================================
-       🙋 关于与联系页
-       ====================================================================== -->
-  <url>
-    <loc>https://t84rt.github.io/about/</loc>
-    <lastmod>2026-08-01T08:00:00+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://t84rt.github.io/contact/</loc>
-    <lastmod>2026-08-01T08:00:00+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
+    <!-- ======================================================================
+         20. 联系我们页面
+         描述: 提供邮箱、公众号、小程序等多种联系方式，方便商务合作与技术交流。
+         关键词: 联系我们, 商务合作, 技术支持
+         ====================================================================== -->
+    <url>
+        <loc>https://t84rt.github.io/contact/</loc>
+        <lastmod>2026-08-01T08:00:00+08:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
 
 </urlset>
