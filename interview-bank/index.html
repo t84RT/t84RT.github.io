@@ -273,7 +273,7 @@
   var SALT = new Uint8Array([0x67,0x6f,0x6e,0x67,0x6b,0x6f,0x6e,0x67,0x2d,0x69,0x6e,0x74,0x65,0x72,0x76,0x69,0x65,0x77,0x2d,0x62,0x61,0x6e,0x6b,0x2d,0x32,0x30,0x32,0x36]);
   var ITER = 100000;
   var CHUNKS = 12;           // 分片数
-  var CHUNK_FILES = ["YmtfMTI4OTQ0ZjcuanM=","YmtfYWM2MWM0OWMuanM=","YmtfMWY1NmY5Y2EuanM=","YmtfY2M3Mzc3YjAuanM=","YmtfYzY3ODVjMDEuanM=","YmtfNDU4NTMxZjUuanM=","YmtfMjQ4MDViNDguanM=","YmtfZDZiYTZkM2EuanM=","YmtfYmY1NDE2YTguanM=","YmtfMmMwNjY2ZjIuanM=","YmtfNDFkMDk0NjcuanM=","YmtfMjQ0OGEyYjYuanM="]; // 分片随机名映射（base64，防按规律爬取）
+  var CHUNK_FILES = ["YmtfNjUyNWZkODguanM=","YmtfMDAxOTc3MjMuanM=","YmtfYTU1MTc1M2QuanM=","YmtfMmJiZWYxOGIuanM=","YmtfZWVhOWM5ZmMuanM=","YmtfMDcyMmNkMzYuanM=","YmtfODA2MmU1MDguanM=","YmtfMjQxNDNmNGIuanM=","YmtfYTFlMzdlOGUuanM=","YmtfYTMxYTBkMzAuanM=","YmtfMDA0NTk1ZWEuanM=","YmtfMWZmNTQwYjQuanM="]; // 分片随机名映射（base64，防按规律爬取）
   var PAGE = 40;             // 每页条数
   var ALL = [];              // 解密后的全量数据
   var ENC = {};              // 加密块 {iv,d}
@@ -316,7 +316,7 @@
     try {
       pendingKey = await deriveKey(v);
       document.getElementById("gate").style.display = "none";
-      loadChunk(0);
+      loadAll();
     } catch(e){ gateError("密码错误，请重试"); }
   }
   document.getElementById("g-btn").addEventListener("click", tryEnter);
@@ -325,30 +325,35 @@
   });
   document.getElementById("g-pwd").focus();
 
-  // ===== 加载加密分片（script 标签，本地 file:// 可用）=====
-  function loadChunk(i){
-    var s = document.createElement("script");
-    s.src = "data/" + atob(CHUNK_FILES[i]);
-    s.onload = function(){
-      var blk = window.__BK_ENC__ && window.__BK_ENC__[i];
-      if(!blk){
-        document.getElementById("load-txt").textContent = "分片 " + i + " 数据异常，请确认 data 目录完整";
-        document.getElementById("load-txt").style.color = "#f87171";
-        return;
-      }
-      ENC[i] = blk;
-      loaded++;
-      var pct = Math.round(loaded/CHUNKS*100);
-      document.getElementById("load-bar").style.width = pct + "%";
-      document.getElementById("load-txt").textContent = loaded + " / " + CHUNKS + " 分片已加载（" + pct + "%）";
-      if (loaded < CHUNKS) { loadChunk(loaded); }
-      else { startDecrypt(); }
-    };
-    s.onerror = function(){
-      document.getElementById("load-txt").textContent = "分片 " + i + " 加载失败：请确认 data 文件夹与本 HTML 在同一目录，且未被移动/删除";
-      document.getElementById("load-txt").style.color = "#f87171";
-    };
-    document.head.appendChild(s);
+  // ===== 加载加密分片（并行加载 12 个，快数倍；本地 file:// 可用）=====
+  function loadAll(){
+    var remain = CHUNKS;
+    for (var i = 0; i < CHUNKS; i++){
+      (function(i){
+        var s = document.createElement("script");
+        s.src = "data/" + atob(CHUNK_FILES[i]);
+        s.onload = function(){
+          var blk = window.__BK_ENC__ && window.__BK_ENC__[i];
+          if(!blk){
+            document.getElementById("load-txt").textContent = "分片 " + i + " 数据异常，请确认 data 目录完整";
+            document.getElementById("load-txt").style.color = "#f87171";
+            return;
+          }
+          ENC[i] = blk;
+          remain--;
+          var done = CHUNKS - remain;
+          var pct = Math.round(done/CHUNKS*100);
+          document.getElementById("load-bar").style.width = pct + "%";
+          document.getElementById("load-txt").textContent = done + " / " + CHUNKS + " 分片已加载（" + pct + "%）";
+          if (remain === 0) { startDecrypt(); }
+        };
+        s.onerror = function(){
+          document.getElementById("load-txt").textContent = "分片 " + i + " 加载失败：请按 Ctrl+F5 强制刷新重试，或确认 data 文件夹与本 HTML 在同一目录";
+          document.getElementById("load-txt").style.color = "#f87171";
+        };
+        document.head.appendChild(s);
+      })(i);
+    }
   }
 
   // ===== 全部加载完成后：逐分片解密（密码错误会在解密时失败）=====
