@@ -334,6 +334,22 @@
   document.getElementById("g-pwd").focus();
 
   // ===== 加载加密分片（并行加载 12 个，快数倍；本地 file:// 可用）=====
+  var merged = 0;
+  var mergeFailed = false;
+  var toastTimer = null;
+  function showToast(msg){
+    var t = document.getElementById("toast");
+    if (!t){
+      t = document.createElement("div");
+      t.id = "toast";
+      t.style.cssText = "position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#1e293b;color:#e6edf7;padding:10px 18px;border-radius:8px;font-size:13px;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,.4);border:1px solid #334155;display:none;";
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.display = "block";
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.style.display = "none"; }, 4000);
+  }
   function loadAll(){
     var remain = CHUNKS;
     for (var i = 0; i < CHUNKS; i++){
@@ -353,7 +369,7 @@
           var pct = Math.round(done/CHUNKS*100);
           document.getElementById("load-bar").style.width = pct + "%";
           document.getElementById("load-txt").textContent = done + " / " + CHUNKS + " 分片已加载（" + pct + "%）";
-          if (remain === 0) { startDecrypt(); }
+          mergeOne(i);
         };
         s.onerror = function(){
           document.getElementById("load-txt").textContent = "分片 " + i + " 加载失败：请按 Ctrl+F5 强制刷新重试，或确认 data 文件夹与本 HTML 在同一目录";
@@ -364,26 +380,35 @@
     }
   }
 
-  // ===== 全部加载完成后：逐分片解密（密码错误会在解密时失败）=====
-  async function startDecrypt(){
-    try {
-      for (var i = 0; i < CHUNKS; i++){
-        var arr = await decryptChunk(i);
-        ALL = ALL.concat(arr);
-        var pct = Math.round((i+1)/CHUNKS*100);
-        document.getElementById("load-bar").style.width = pct + "%";
-        document.getElementById("load-txt").textContent = "解密中 " + (i+1) + " / " + CHUNKS + "（" + pct + "%）";
+  // ===== 每个分片下载完成即解密并合并（边加载边看，不用等全部）=====
+  function mergeOne(i){
+    decryptChunk(i).then(function(arr){
+      if (mergeFailed) return;
+      ALL = ALL.concat(arr);
+      merged++;
+      var pct = Math.round(merged/CHUNKS*100);
+      document.getElementById("load-bar").style.width = pct + "%";
+      document.getElementById("st-total").textContent = ALL.length.toLocaleString();
+      if (merged === 1){
+        // 第一个分片就绪：立即显示主界面，可先行浏览
+        document.getElementById("loading").style.display = "none";
+        initFilters();
+        applyFilter();
+        showToast("已加载 1/" + CHUNKS + "，可先行浏览，其余数据后台加载中…");
+      } else if (merged < CHUNKS){
+        applyFilter();
+        showToast("已加载 " + merged + "/" + CHUNKS + " 分片（" + pct + "%）");
+      } else {
+        applyFilter();
+        showToast("全部 " + ALL.length.toLocaleString() + " 题已就绪");
       }
-      var total = document.getElementById("st-total");
-      total.textContent = ALL.length.toLocaleString();
-      document.getElementById("loading").style.display = "none";
-      initFilters();
-      applyFilter();
-    } catch(e){
+    }).catch(function(e){
+      if (mergeFailed) return;
+      mergeFailed = true;
       document.getElementById("loading").style.display = "none";
       document.getElementById("gate").style.display = "flex";
       gateError("密码错误，请重试");
-    }
+    });
   }
 
   // ===== 筛选条件 =====
