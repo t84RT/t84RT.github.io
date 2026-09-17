@@ -273,7 +273,7 @@
   var SALT = new Uint8Array([0x67,0x6f,0x6e,0x67,0x6b,0x6f,0x6e,0x67,0x2d,0x69,0x6e,0x74,0x65,0x72,0x76,0x69,0x65,0x77,0x2d,0x62,0x61,0x6e,0x6b,0x2d,0x32,0x30,0x32,0x36]);
   var ITER = 100000;
   var CHUNKS = 12;           // 分片数
-  var CHUNK_FILES = ["YmtfNjUyNWZkODguanM=","YmtfMDAxOTc3MjMuanM=","YmtfYTU1MTc1M2QuanM=","YmtfMmJiZWYxOGIuanM=","YmtfZWVhOWM5ZmMuanM=","YmtfMDcyMmNkMzYuanM=","YmtfODA2MmU1MDguanM=","YmtfMjQxNDNmNGIuanM=","YmtfYTFlMzdlOGUuanM=","YmtfYTMxYTBkMzAuanM=","YmtfMDA0NTk1ZWEuanM=","YmtfMWZmNTQwYjQuanM="]; // 分片随机名映射（base64，防按规律爬取）
+  var CHUNK_FILES = ["YmtfZjhmZTZmMmQuanM=","YmtfZjRhODFmOWIuanM=","YmtfMzE4ZTBlNTUuanM=","YmtfNTU4YzMwOGMuanM=","YmtfMTg4ZGJiNWEuanM=","YmtfYzdkYzJlZWYuanM=","YmtfNmVjMDlkYWIuanM=","YmtfYjVhY2M0OTYuanM=","YmtfODk4NTI0ZDYuanM=","YmtfNjY5YWVlYzkuanM=","YmtfNjg1Y2NlOGIuanM=","YmtfODZjODFjYTAuanM="]; // 分片随机名映射（base64，防按规律爬取）
   var PAGE = 40;             // 每页条数
   var ALL = [];              // 解密后的全量数据
   var ENC = {};              // 加密块 {iv,d}
@@ -300,7 +300,15 @@
   async function decryptChunk(i){
     var blk = ENC[i];
     var pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:hexToBytes(blk.iv)}, pendingKey, b64ToBytes(blk.d));
-    return JSON.parse(new TextDecoder().decode(pt));
+    // 题库先 gzip 压缩再加密（体积缩小约 87%），解密后解压
+    try {
+      var ds = new DecompressionStream("gzip");
+      var stream = new Blob([pt]).stream().pipeThrough(ds);
+      var ab = await new Response(stream).arrayBuffer();
+      return JSON.parse(new TextDecoder().decode(ab));
+    } catch(e){
+      return JSON.parse(new TextDecoder().decode(pt));
+    }
   }
 
   // ===== 密码门（密码正确 → 派生密钥 → 加载并解密数据）=====
