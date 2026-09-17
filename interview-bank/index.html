@@ -333,6 +333,60 @@
   });
   document.getElementById("g-pwd").focus();
 
+  // ===== 加载提示条：题库加载中 + 品牌信息轮播 =====
+  var lbEl = null, lbProg = null, lbInfo = null, lbTimer = null;
+  var LOAD_INFO = [
+    "📱 微信公众号：小吴同学电气设计",
+    "🔍 微信小程序：小吴同学电气设计工具",
+    "✉️ 邮箱：xiaowu112899@outlook.com",
+    "▶️ 抖音 / 📺 B站 / 📝 CSDN：小吴同学电气设计",
+    "🐙 GitHub：t84RT / t84RT.github.io",
+    "🛠️ PLC编程 · 伺服调试 · 配电柜设计 · ESP32/STM32 · PCB设计",
+    "⚡ 用代码与算法重塑电气设计流程 · 让效率更简单"
+  ];
+  var infoIdx = 0;
+  function showLoadBar(){
+    if (lbEl) return;
+    lbEl = document.createElement("div");
+    lbEl.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(90deg,rgba(124,58,237,.97),rgba(14,165,233,.97));color:#fff;padding:7px 16px;display:flex;align-items:center;gap:14px;font-size:13px;box-shadow:0 2px 14px rgba(0,0,0,.35);transition:opacity .6s;";
+    lbProg = document.createElement("span");
+    lbProg.style.cssText = "white-space:nowrap;font-weight:700;";
+    lbProg.textContent = "📥 题库加载中 1/12";
+    lbInfo = document.createElement("span");
+    lbInfo.style.cssText = "flex:1;text-align:center;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;";
+    lbInfo.textContent = LOAD_INFO[0];
+    var bar = document.createElement("div");
+    bar.style.cssText = "width:110px;height:6px;background:rgba(255,255,255,.25);border-radius:3px;overflow:hidden;flex-shrink:0;";
+    var fill = document.createElement("div");
+    fill.id = "lb-fill";
+    fill.style.cssText = "height:100%;width:0%;background:#fff;border-radius:3px;transition:width .4s;";
+    bar.appendChild(fill);
+    lbEl.appendChild(lbProg); lbEl.appendChild(lbInfo); lbEl.appendChild(bar);
+    document.body.appendChild(lbEl);
+    lbTimer = setInterval(function(){
+      lbInfo.textContent = LOAD_INFO[infoIdx++ % LOAD_INFO.length];
+    }, 3000);
+  }
+  function updateLoadBar(done, total){
+    if (!lbEl) return;
+    var pct = Math.round(done/total*100);
+    lbProg.textContent = "📥 题库加载中 " + done + " / " + total + " 分片（" + pct + "%）";
+    var f = document.getElementById("lb-fill");
+    if (f) f.style.width = pct + "%";
+  }
+  function finishLoadBar(totalN){
+    if (!lbEl) return;
+    clearInterval(lbTimer);
+    lbProg.textContent = "✅ 全部 " + totalN.toLocaleString() + " 题已就绪";
+    lbInfo.textContent = "📱 小吴同学电气设计 · 让效率更简单";
+    var f = document.getElementById("lb-fill");
+    if (f) f.style.width = "100%";
+    setTimeout(function(){
+      lbEl.style.opacity = "0";
+      setTimeout(function(){ if (lbEl) lbEl.remove(); lbEl = null; }, 700);
+    }, 2600);
+  }
+
   // ===== 加载加密分片（并行加载 12 个，快数倍；本地 file:// 可用）=====
   var merged = 0;
   var mergeFailed = false;
@@ -392,13 +446,18 @@
       if (merged === 1){
         // 第一个分片就绪：立即显示主界面，可先行浏览
         document.getElementById("loading").style.display = "none";
+        showLoadBar();
+        updateLoadBar(merged, CHUNKS);
         initFilters();
         applyFilter();
         showToast("已加载 1/" + CHUNKS + "，可先行浏览，其余数据后台加载中…");
       } else if (merged < CHUNKS){
+        updateLoadBar(merged, CHUNKS);
         applyFilter();
         showToast("已加载 " + merged + "/" + CHUNKS + " 分片（" + pct + "%）");
       } else {
+        updateLoadBar(merged, CHUNKS);
+        finishLoadBar(ALL.length);
         applyFilter();
         showToast("全部 " + ALL.length.toLocaleString() + " 题已就绪");
       }
