@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工控自动化面试题库 · 数据看板</title>
+<style>
+  :root{
+    --bg:#0b1220; --bg2:#0f1a2e; --card:#131f36; --card2:#182642;
+    --line:#243352; --txt:#e6edf7; --mut:#93a3bd; --dim:#6b7c99;
+    --cyan:#22d3ee; --blue:#3b82f6; --green:#34d399; --amber:#fbbf24; --red:#f87171;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(160deg,#0b1220 0%,#0d1830 60%,#0b1220 100%);
+    color:var(--txt); line-height:1.6; padding:28px 22px 48px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1280px;margin:0 auto}
+  header{margin-bottom:22px}
+  .eyebrow{color:var(--cyan);font-size:13px;letter-spacing:3px;font-weight:600;text-transform:uppercase}
+  h1{font-size:30px;font-weight:700;margin:6px 0 8px;letter-spacing:.5px}
+  h1 .accent{color:var(--cyan)}
+  .desc{color:var(--mut);font-size:14px;max-width:980px}
+  .desc b{color:var(--txt)}
+  .src-note{margin-top:10px;font-size:12.5px;color:var(--dim);border-left:3px solid var(--blue);padding-left:12px}
+
+  /* KPI */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:22px 0}
+  .kpi{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);
+    border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+  .kpi::after{content:"";position:absolute;right:-18px;top:-18px;width:70px;height:70px;border-radius:50%;
+    background:radial-gradient(circle,rgba(34,211,238,.18),transparent 70%)}
+  .kpi .lab{font-size:12.5px;color:var(--mut)}
+  .kpi .val{font-size:30px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+  .kpi .sub{font-size:12px;color:var(--dim);margin-top:2px}
+  .kpi.total .val{color:var(--cyan)}
+  .kpi.easy .val{color:var(--green)}
+  .kpi.mid .val{color:var(--amber)}
+  .kpi.hard .val{color:var(--red)}
+  .kpi.cat .val{color:var(--blue)}
+
+  .grid{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;margin-bottom:16px}
+  .grid.full{grid-template-columns:1fr}
+  .card{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);
+    border-radius:14px;padding:16px 18px}
+  .card h2{font-size:15px;font-weight:600;margin-bottom:2px}
+  .card .hint{font-size:12px;color:var(--dim);margin-bottom:8px}
+  .chart{width:100%;height:380px}
+  .chart.tall{height:460px}
+  .chart.short{height:340px}
+
+  /* knowledge tag matrix */
+  .tags{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:6px}
+  .tag{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;
+    transition:.15s;position:relative}
+  .tag:hover{border-color:var(--cyan);transform:translateY(-1px)}
+  .tag.on{border-color:var(--cyan);background:rgba(34,211,238,.10);box-shadow:0 0 0 1px var(--cyan) inset}
+  .tag .tn{font-size:13.5px;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tag .tc{font-size:12px;color:var(--mut);margin-top:2px}
+  .tag .bar{height:4px;border-radius:2px;background:#22314f;margin-top:7px;overflow:hidden}
+  .tag .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+  .tag .top{display:flex;align-items:baseline;gap:6px}
+  .tag .cnt{flex:0 0 auto;font-size:13px;color:var(--cyan);font-weight:700;font-variant-numeric:tabular-nums}
+
+  /* sample Q&A */
+  .qa{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .qa-item{background:var(--bg2);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .qa-item.match{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan) inset}
+  .qa-item.hidden{display:none}
+  .qa-q{padding:12px 14px;cursor:pointer;display:flex;gap:10px;align-items:flex-start;font-size:14px}
+  .qa-q:hover{background:rgba(34,211,238,.05)}
+  .qa-q .badge{flex:0 0 auto;font-size:11px;padding:2px 8px;border-radius:6px;background:rgba(59,130,246,.18);
+    color:#9cc2ff;border:1px solid rgba(59,130,246,.35);white-space:nowrap;margin-top:2px}
+  .qa-q .badge.hard{background:rgba(248,113,113,.15);color:#fca5a5;border-color:rgba(248,113,113,.35)}
+  .qa-q .badge.mid{background:rgba(251,191,36,.15);color:#fcd34d;border-color:rgba(251,191,36,.35)}
+  .qa-q .badge.easy{background:rgba(52,211,153,.15);color:#6ee7b7;border-color:rgba(52,211,153,.35)}
+  .qa-q .qtxt{flex:1}
+  .qa-q .arrow{flex:0 0 auto;color:var(--dim);transition:.2s;margin-top:2px}
+  .qa-item.open .arrow{transform:rotate(90deg)}
+  .qa-a{display:none;padding:0 14px 14px 14px;font-size:13.5px;color:var(--mut);border-top:1px dashed var(--line);margin-top:0}
+  .qa-item.open .qa-a{display:block;padding-top:12px}
+  .qa-a .src{display:inline-block;margin-top:8px;font-size:11.5px;color:var(--dim);background:#0d1830;padding:2px 8px;border-radius:5px}
+
+  .foot{margin-top:22px;font-size:12px;color:var(--dim);text-align:center}
+  #toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);
+    background:#1c2b4a;border:1px solid var(--cyan);color:var(--txt);padding:9px 18px;border-radius:10px;
+    font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* static fallback table */
+  .fallback{display:none}
+  table.stat{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  table.stat th,table.stat td{border:1px solid var(--line);padding:6px 10px;text-align:left}
+  table.stat th{background:var(--card2);color:var(--cyan)}
+  @media(max-width:900px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid{grid-template-columns:1fr}
+    .chart{height:320px}
+  }
+
+  /* ===== 关于 小吴同学电气设计 ===== */
+  .about{margin-top:30px;border-top:1px solid var(--line);padding-top:24px}
+  .about-head{display:flex;align-items:center;gap:14px}
+  .about-logo{width:54px;height:54px;border-radius:15px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:27px;
+    background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(139,92,246,.18));border:1px solid var(--line)}
+  .about-name{font-size:19px;font-weight:700;letter-spacing:.3px}
+  .about-slogan{font-size:12.5px;color:var(--mut);margin-top:2px}
+  .about-badges{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0 14px}
+  .ab{font-size:11.5px;padding:3px 11px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);color:var(--cyan)}
+  .about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .about-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .ac-title{font-size:13px;font-weight:600;color:var(--cyan);margin-bottom:9px}
+  .ac-mail{font-size:14.5px;color:#0ea5e9;font-weight:600;word-break:break-all}
+  .ac-sub{font-size:12px;color:var(--mut);margin-top:7px;line-height:1.75}
+  .qr-img{width:124px;height:124px;border-radius:10px;border:1px solid var(--line);display:block;margin:0 auto 9px;background:#fff}
+  .ac-name{text-align:center;font-size:13.5px;font-weight:600}
+  .about-card.qr .ac-title{text-align:center}
+  .about-card.qr .ac-sub{text-align:center}
+  .ac-plats{display:flex;flex-direction:column;gap:7px;font-size:12.5px;color:var(--mut)}
+  .ac-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+  .ac-tags span{font-size:11px;padding:2px 9px;border-radius:6px;background:var(--bg2);border:1px solid var(--line);color:#c8d6ee}
+  /* 公众号横幅卡 */
+  .about-card.gzh{grid-column:1/-1;text-align:center;padding:16px 18px}
+  .gzh-img{width:100%;max-width:540px;height:auto;border-radius:10px;border:1px solid var(--line);display:block;margin:0 auto}
+  .about-foot{margin-top:15px;font-size:11.5px;color:var(--dim);text-align:center}
+  @media(max-width:980px){.about-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.about-grid{grid-template-columns:1fr}}
+
+  /* ===== 密码门 ===== */
+  #gate{position:fixed;inset:0;z-index:100;background:linear-gradient(160deg,#0b1220 0%,#0d1830 60%,#0b1220 100%);
+    display:flex;align-items:center;justify-content:center}
+  #gate .gbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:34px 40px;
+    width:min(420px,90vw);text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  #gate .glock{font-size:34px}
+  #gate h2{font-size:19px;margin:10px 0 4px}
+  #gate .gsub{font-size:12.5px;color:var(--mut);margin-bottom:18px}
+  #gate input{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--txt);
+    border-radius:10px;padding:11px 14px;font-size:15px;outline:none;text-align:center;letter-spacing:2px}
+  #gate input:focus{border-color:var(--cyan)}
+  #gate .gbtn{width:100%;margin-top:12px;background:linear-gradient(90deg,var(--blue),var(--cyan));
+    color:#06121f;font-weight:700;border:none;border-radius:10px;padding:11px;font-size:15px;cursor:pointer;transition:.15s}
+  #gate .gbtn:hover{filter:brightness(1.1)}
+  #gate .gerr{color:var(--red);font-size:12.5px;margin-top:10px;min-height:18px}
+  #gate .ghint{font-size:11px;color:var(--dim);margin-top:14px}
+</style>
+<!-- ANTI_AI_BOT -->
+<script>
+// ===== 反AI抓取·无头浏览器/爬虫检测（早期阻断，不给任何内容）=====
+(function(){
+  try {
+    var ua = (navigator.userAgent || "").toLowerCase();
+    var BAD_UA = /headless|phantom|puppeteer|playwright|selenium|pyppeteer|spider|crawler|scrapy|curl|wget|axios|node-fetch|go-http|python-requests|httpx/i.test(ua);
+    var webdriver = !!navigator.webdriver;
+    if (BAD_UA || webdriver) {
+      // 伪装成"页面加载失败"：不输出密码门、不输出数据、不初始化任何逻辑
+      var root = document.documentElement;
+      root.innerHTML = '<head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"></head><body style="margin:0;background:#0b1220;color:#64748b;font-family:\'Segoe UI\',sans-serif;display:flex;align-items:center;justify-content:center;height:100vh"><div style="text-align:center"><h2 style="font-weight:400">页面加载失败</h2><p>请使用现代浏览器访问。</p><p style="font-size:12px;opacity:.6">Error 403</p></div></body>';
+      try { history.replaceState(null, "", location.pathname); } catch(e){}
+      window.stop && window.stop();
+    }
+  } catch(e){}
+})();
+</script>
+<!-- /ANTI_AI_BOT -->
+</head>
+<body>
+<!-- ===== 密码门 ===== -->
+<div id="gate">
+  <div class="gbox">
+    <div class="glock">🔒</div>
+    <h2>工控面试题库 · 访问保护</h2>
+    <div class="gsub">本题库内容受密码保护，请输入访问密码进入</div>
+    <input type="password" id="g-pwd" placeholder="请输入密码" autocomplete="off">
+    <button class="gbtn" id="g-btn">进入题库</button>
+    <div class="gerr" id="g-err"></div>
+    <div class="ghint">提示：访问密码请通过网站主理人获取</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">INDUSTRIAL AUTOMATION · QUESTION BANK</div>
+    <h1>工控自动化面试题库 <span class="accent">数据看板</span></h1>
+    <p class="desc">
+      本题库源自<b>余工《PLC程序调试与ST语言100题》《电气元件 / 编程 / 现场排查约300题》</b>，
+      经 <b>CSDN / 知乎 / 博客园 / 工控论坛 / 招聘面经 / GitHub</b> 等多渠道检索并原创工程扩展，
+      结构化整理为 15 个分类，每题含 编号 / 分类 / 难度 / 问题 / 答案 / 来源。
+    </p>
+    <div class="src-note">
+      数据口径：Q&amp;A 总条数 <b>50,042</b>；其中<b>真实独立题 15,942</b>、<b>知识变体（同一知识点×8 提问角度衍生）34,100</b>，
+      答案与问题均经全库去重验证（重复组=0）。难度 易/中/难 三档；数字均来自题库统计，可复核。
+    </div>
+  </header>
+
+  <!-- KPI -->
+  <div class="kpis">
+    <div class="kpi total"><div class="lab">总题量（条）</div><div class="val">50,042</div><div class="sub">真实独立题 15,942 + 知识变体 34,100，全库去重（重复组=0）</div></div>
+    <div class="kpi cat"><div class="lab">知识分类</div><div class="val">15</div><div class="sub">覆盖 PLC / 运动 / 通讯 / 视觉 / 嵌入式等</div></div>
+    <div class="kpi easy"><div class="lab">易（条）</div><div class="val">15,940</div><div class="sub">占比 31.9%</div></div>
+    <div class="kpi mid"><div class="lab">中（条）</div><div class="val">23,672</div><div class="sub">占比 47.3%</div></div>
+    <div class="kpi hard"><div class="lab">难（条）</div><div class="val">10,430</div><div class="sub">占比 20.8%</div></div>
+  </div>
+
+  <!-- Row 1: category bar + difficulty donut -->
+  <div class="grid">
+    <div class="card">
+      <h2>各分类题量分布（按题量排序）</h2>
+      <div class="hint">点击某一分类条形，下方“样例题目”将自动高亮对应样例。</div>
+      <div id="chart-cat" class="chart tall"></div>
+    </div>
+    <div class="card">
+      <h2>难度三档分布</h2>
+      <div class="hint">中档题占近半，易:中:难 ≈ 32 : 47 : 21</div>
+      <div id="chart-diff" class="chart"></div>
+    </div>
+  </div>
+
+  <!-- Row 2: source + stacked -->
+  <div class="grid">
+    <div class="card">
+      <h2>来源渠道构成（Top8 + 其他）</h2>
+      <div class="hint">知识变体统一标注“源自”，真实独立题以 原创工程扩展 / CSDN检索 / 源PDF原题 为主</div>
+      <div id="chart-src" class="chart short"></div>
+    </div>
+    <div class="card">
+      <h2>各分类 × 难度堆叠（条）</h2>
+      <div class="hint">观察每个分类内部 易/中/难 的结构差异</div>
+      <div id="chart-stack" class="chart short"></div>
+    </div>
+  </div>
+
+  <!-- Row 3: knowledge coverage matrix -->
+  <div class="grid full">
+    <div class="card">
+      <h2>知识点覆盖矩阵（15 个分类）</h2>
+      <div class="hint">色块长度 ∝ 该分类题量；点击标签同样可高亮下方样例。</div>
+      <div class="tags" id="tag-cloud"></div>
+    </div>
+  </div>
+
+  <!-- Row 4: sample Q&A -->
+  <div class="grid full">
+    <div class="card">
+      <h2>样例题目（Q&amp;A 可点击展开）</h2>
+      <div class="hint">以下 8 条原样摘自题库，覆盖 传感 / 编程基础 / 调试 / 运动 / 通讯 / 现场排错 / 视觉 / 嵌入式。</div>
+      <div class="qa" id="qa-list"></div>
+    </div>
+  </div>
+
+  <!-- ===== 关于 小吴同学电气设计 ===== -->
+  <div class="about">
+    <div class="about-head">
+      <div class="about-logo">⚡</div>
+      <div>
+        <div class="about-name">小吴同学电气设计</div>
+        <div class="about-slogan">用代码与算法重塑传统电气设计流程 · 让每一个工程师告别低效，轻松出图！</div>
+      </div>
+    </div>
+    <div class="about-badges">
+      <span class="ab">💻 独立工具开发者</span>
+      <span class="ab">🔌 电气效率极客</span>
+      <span class="ab">⚙️ 工控·PLC·伺服</span>
+      <span class="ab">📈 网页·小程序全端覆盖</span>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="ac-title">✉️ 商务 / 技术交流</div>
+        <div class="ac-mail">xiaowu112899@outlook.com</div>
+        <div class="ac-sub">商务合作 · 技术交流 · 项目外包<br>PLC程序修改 / 外包 / 解密 / HMI书写 · 电工维修 · 嵌入式开发</div>
+      </div>
+      <div class="about-card qr">
+        <div class="ac-title">🔍 微信小程序</div>
+        <img src="assets/mini-qr.png" alt="小程序码" class="qr-img">
+        <div class="ac-name">小吴同学电气设计工具</div>
+        <div class="ac-sub">扫码体验电气计算工具</div>
+      </div>
+      <div class="about-card">
+        <div class="ac-title">🌐 平台矩阵</div>
+        <div class="ac-plats">
+          <span>▶️ 抖音 · 实操演示</span>
+          <span>📺 B站 · 迭代日志</span>
+          <span>📝 CSDN · 技术归档</span>
+          <span>🐙 GitHub · @t84RT</span>
+        </div>
+        <div class="ac-title" style="margin-top:13px">🛠️ 服务方向</div>
+        <div class="ac-tags">
+          <span>PLC编程</span><span>伺服调试</span><span>配电柜设计</span>
+          <span>电气计算工具</span><span>DataHarvest Pro</span><span>ESP32/STM32</span>
+          <span>PCB设计</span><span>网络安全</span>
+        </div>
+      </div>
+    </div>
+    <div class="about-card gzh">
+      <div class="ac-title">📱 微信公众号</div>
+      <img src="assets/gzh-qr.png" alt="公众号二维码" class="gzh-img">
+      <div class="ac-name" style="margin-top:10px">小吴同学电气设计</div>
+      <div class="ac-sub">扫码关注获取更多技术干货 · 微信搜一搜：小吴同学电气设计</div>
+    </div>
+    <div class="about-foot">© 2026 小吴同学电气设计 · 让效率更简单 · 主流品牌支持：西门子 / 三菱 / 欧姆龙 / 汇川</div>
+  </div>
+
+  <div class="foot">工控自动化面试题库数据看板 · 单文件自包含 · 数字口径见顶部说明 · ECharts CDN 加载失败时自动降级为静态表格</div>
+</div>
+
+<div id="toast"></div>
+
+<!-- noscript / static fallback -->
+<noscript>
+  <div class="fallback" style="display:block;max-width:900px;margin:20px auto;background:#131f36;border:1px solid #243352;border-radius:12px;padding:18px">
+    <h3 style="color:#22d3ee">静态数据降级（JS 未启用）</h3>
+    <p>总题量 50,042（真实独立题 15,942 + 知识变体 34,100）；分类 15；难度 易15,940 / 中23,672 / 难10,430。</p>
+    <table class="stat">
+      <tr><th>分类</th><th>题量</th><th>易</th><th>中</th><th>难</th></tr>
+      <tr><td>DDQ 电气基础与元件</td><td>1556</td><td>408</td><td>728</td><td>420</td></tr>
+      <tr><td>SENSOR 传感器与检测</td><td>1532</td><td>480</td><td>780</td><td>272</td></tr>
+      <tr><td>LANG PLC编程语言与基础</td><td>11507</td><td>4397</td><td>5262</td><td>1848</td></tr>
+      <tr><td>DEBUG 程序调试与故障排查</td><td>4011</td><td>1767</td><td>1581</td><td>663</td></tr>
+      <tr><td>MOTION 运动控制(伺服/步进)</td><td>2517</td><td>1929</td><td>447</td><td>141</td></tr>
+      <tr><td>DRIVE 变频器与电机驱动</td><td>3519</td><td>1011</td><td>1686</td><td>822</td></tr>
+      <tr><td>SAFETY 工业电气安全与网络</td><td>1470</td><td>171</td><td>618</td><td>681</td></tr>
+      <tr><td>COMM 通讯协议与组网</td><td>2034</td><td>615</td><td>1014</td><td>405</td></tr>
+      <tr><td>HMI 触摸屏HMI与上位机</td><td>2906</td><td>782</td><td>1524</td><td>600</td></tr>
+      <tr><td>FIELD 现场调试与故障排查</td><td>570</td><td>156</td><td>273</td><td>141</td></tr>
+      <tr><td>VISION 机器视觉</td><td>4482</td><td>1212</td><td>2064</td><td>1206</td></tr>
+      <tr><td>ROBOT 工业机器人</td><td>5277</td><td>1362</td><td>2634</td><td>1281</td></tr>
+      <tr><td>EMBED 嵌入式(ESP32/STM32)</td><td>4851</td><td>1068</td><td>2631</td><td>1152</td></tr>
+      <tr><td>SOFT 面试综合与软技能</td><td>3585</td><td>540</td><td>2295</td><td>750</td></tr>
+      <tr><td>ELECDESIGN 电气设计与图纸</td><td>225</td><td>42</td><td>135</td><td>48</td></tr>
+      </table>
+    <p style="margin-top:8px">主要来源：知识变体·原创工程扩展 16,795；知识变体·CSDN检索 8,903；原创工程扩展 7,888；CSDN检索 4,057；知识变体·源PDF原题 2,183；知识变体·工控论坛检索 1,677；知识变体·招聘面经检索 1,114；知识变体·博客园检索 934；其他（含源PDF原题 907、知乎/博客园/招聘面经/各细分渠道等）约 4,491。</p>
+  </div>
+</noscript>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script>
+// ===== 密码门（验证通过前遮罩盖住全部内容）=====
+function sha256(s){
+  s = unescape(encodeURIComponent(s));
+  function rightRotate(v,a){ return (v>>>a)|(v<<(32-a)); }
+  var mp=Math.pow, mw=mp(2,32), len=s.length, i,j, result='';
+  var words=[], bl=len*8;
+  var hash=sha256.h=sha256.h||[], k=sha256.k=sha256.k||[], pc=k.length, comp={};
+  for (var c=2; pc<64; c++){
+    if(!comp[c]){
+      for(i=0;i<313;i+=c) comp[i]=c;
+      hash[pc]=(mp(c,.5)*mw)|0;
+      k[pc++]=(mp(c,1/3)*mw)|0;
+    }
+  }
+  s+='\x80';
+  while(s.length%64-56) s+='\x00';
+  for(i=0;i<s.length;i++){ j=s.charCodeAt(i); words[i>>2]|=j<<((3-i)%4)*8; }
+  words[words.length]=((bl/mw)|0);
+  words[words.length]=bl;
+  for(j=0;j<words.length;){
+    var w=words.slice(j,j+=16), oh=hash.slice(0,8);
+    for(i=0;i<64;i++){
+      var i2=i+j, w15=w[i-15], w2=w[i-2];
+      var a=hash[0], e=hash[4];
+      var t1=hash[7]+(rightRotate(e,6)^rightRotate(e,11)^rightRotate(e,25))
+        +((e&hash[5])^((~e)&hash[6]))+k[i]
+        +(w[i]=(i<16)?w[i]:(w[i-16]+(rightRotate(w15,7)^rightRotate(w15,18)^(w15>>>3))
+        +w[i-7]+(rightRotate(w2,17)^rightRotate(w2,19)^(w2>>>10)))|0);
+      var t2=(rightRotate(a,2)^rightRotate(a,13)^rightRotate(a,22))
+        +((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));
+      hash=[(t1+t2)|0].concat(hash);
+      hash[4]=(hash[4]+t1)|0;
+    }
+    for(i=0;i<8;i++) hash[i]=(hash[i]+oh[i])|0;
+  }
+  for(i=0;i<8;i++){
+    for(j=3;j+1;j--){
+      var b=(hash[i]>>(j*8))&255;
+      result+=((b<16)?0:'')+b.toString(16);
+    }
+  }
+  return result;
+}
+var GATE_HASH = "2d10899ec8770f397c7d148bbc0a6d4c4433c7d89cec64c0de0f994feb83ef49";
+function tryEnter(){
+  var v = document.getElementById("g-pwd").value;
+  var err = document.getElementById("g-err");
+  if(!v){ err.textContent = "请输入密码"; return; }
+  if(sha256(v) === GATE_HASH){
+    document.getElementById("gate").style.display = "none";
+  } else {
+    err.textContent = "密码错误，请重试";
+    document.getElementById("g-pwd").value = "";
+    document.getElementById("g-pwd").focus();
+  }
+}
+document.getElementById("g-btn").addEventListener("click", tryEnter);
+document.getElementById("g-pwd").addEventListener("keydown", function(e){
+  if(e.key === "Enter") tryEnter();
+});
+document.getElementById("g-pwd").focus();
+</script>
+<script>
+// ECharts CDN 失败时的纯静态降级：把核心数字以表格直接渲染到页面
+if (typeof echarts === 'undefined') {
+  document.write('<div class="fallback" style="display:block;max-width:900px;margin:18px auto;background:#131f36;border:1px solid #243352;border-radius:12px;padding:18px;color:#e6edf7;font-size:13px">ECharts 库加载失败，已降级为文字数据：总题量 50,042；分类 15；易 15,940 / 中 23,672 / 难 10,430。分类题量：DDQ 1556、SENSOR 1532、LANG 11507、DEBUG 4011、MOTION 2517、DRIVE 3519、SAFETY 1470、COMM 2034、HMI 2906、FIELD 570、VISION 4482、ROBOT 5277、EMBED 4851、SOFT 3585、ELECDESIGN 225。</div>');
+}
+</script>
+<script>
+(function(){
+  "use strict";
+
+  // ===== 数据（50,042 版，已交叉核对：15 分类合计 = 50,042）=====
+  var CATS = [
+    {p:"DDQ", n:"电气基础与元件", v:1556, e:408, m:728, h:420},
+    {p:"SENSOR", n:"传感器与检测", v:1532, e:480, m:780, h:272},
+    {p:"LANG", n:"PLC编程语言与基础", v:11507, e:4397, m:5262, h:1848},
+    {p:"DEBUG", n:"程序调试与故障排查", v:4011, e:1767, m:1581, h:663},
+    {p:"MOTION", n:"运动控制(伺服/步进)", v:2517, e:1929, m:447, h:141},
+    {p:"DRIVE", n:"变频器与电机驱动", v:3519, e:1011, m:1686, h:822},
+    {p:"SAFETY", n:"工业电气安全与网络", v:1470, e:171, m:618, h:681},
+    {p:"COMM", n:"通讯协议与组网", v:2034, e:615, m:1014, h:405},
+    {p:"HMI", n:"触摸屏HMI与上位机", v:2906, e:782, m:1524, h:600},
+    {p:"FIELD", n:"现场调试与故障排查", v:570, e:156, m:273, h:141},
+    {p:"VISION", n:"机器视觉", v:4482, e:1212, m:2064, h:1206},
+    {p:"ROBOT", n:"工业机器人", v:5277, e:1362, m:2634, h:1281},
+    {p:"EMBED", n:"嵌入式(ESP32/STM32)", v:4851, e:1068, m:2631, h:1152},
+    {p:"SOFT", n:"面试综合与软技能", v:3585, e:540, m:2295, h:750},
+    {p:"ELECDESIGN", n:"电气设计与图纸", v:225, e:42, m:135, h:48},
+  ];
+  var DIFF = [{n:"易",v:15940,c:"#34d399"},{n:"中",v:23672,c:"#fbbf24"},{n:"难",v:10430,c:"#f87171"}];
+  var SRC = [
+    {n:"知识变体·原创工程扩展", v:16795},
+    {n:"知识变体·CSDN检索", v:8903},
+    {n:"原创工程扩展", v:7888},
+    {n:"CSDN检索", v:4057},
+    {n:"知识变体·源PDF原题", v:2183},
+    {n:"知识变体·工控论坛检索", v:1677},
+    {n:"知识变体·招聘面经检索", v:1114},
+    {n:"知识变体·博客园检索", v:934},
+    {n:"其他（各细分渠道）", v:4491}
+  ];
+  var QA = [
+    {p:"SENSOR", diff:"中", q:"一般接近开关棕、蓝、黑三线分别是什么功能？三线NPN常开。",
+     a:"三线制直流传感器线色国标/行业约定：棕色=电源正极(+24V)，蓝色=电源负极(0V)，黑色=信号输出线，接PLC输入点。四线制通常比三线多一根可选信号，常见为棕+24V、蓝0V、黑常开(NO)、白常闭(NC)，一个传感器同时给出常开和常闭两路信号，便于安全逻辑选用。棕+24V、蓝0V、黑信号；动作检测时输出与负载及PLC输入正确匹配即可。",
+     tag:"源PDF原题"},
+    {p:"LANG", diff:"易", q:"在气缸到位检测场合，用扫描周期原理解释起保停里自锁为什么能保持。",
+     a:"以起保停为例，扫描顺序为：启动(常开)→运行自锁触点(常开)→停止(常闭)→运行线圈。当启动信号置真后，本周期扫到运行线圈把它置真；变量状态在本扫描周期结束时被保留下来，于是下一周期开始时运行线圈仍为真。下一周期扫描到运行的自锁常开触点时该触点即为真，哪怕启动按钮已经松开，电流也能经自锁触点再次导通线圈，实现保持。",
+     tag:"源PDF原题"},
+    {p:"DEBUG", diff:"易", q:"项目现场如果没有图纸，只有PLC程序和HMI程序，用什么方法可以快速定位一个气缸的手动控制？",
+     a:"①触摸屏IO监视定位查找气缸的输出点进行定位；②通过触摸屏的气缸手动控制变量进行定位。补充：无图纸时还可交叉引用该气缸输出点，反查所有驱动它的网络；再顺着输出反查HMI上哪个按钮/手动画面置位了该中间变量，两分钟即可锁定手动回路。",
+     tag:"源PDF原题"},
+    {p:"MOTION", diff:"易", q:"伺服脉冲的传输模式有哪些？",
+     a:"脉冲位置指令有三种传输模式：①脉冲+方向(PULS/DIR)：一路脉冲串决定走多少，另一路高低电平决定正反转，最常用，编程最简单；②CW/CCW双脉冲：正转一路CW脉冲、反转一路CCW脉冲，两路独立，方向由哪一路有脉冲决定；③AB相正交脉冲：A/B两路90°相位差，通过A超前还是B超前判断方向，类似编码器反馈。",
+     tag:"源PDF原题"},
+    {p:"COMM", diff:"难", q:"变频器的多站轮询某站卡死超时跳过是什么，请详细说明。",
+     a:"原题：Modbus RTU多站轮询时其中一个站卡死，线路正常无干扰，怎么办？答：轮询要加适量延时，并加超时跳过功能。工程展开：主站每发一帧给从站i，启动超时定时器(如300~500ms)；定时器内收到合法应答就处理复位；超时到没收到，就把i错误计数+1、指针指向下一站继续轮询，让总线流动。同时设连续错误次数阈值，超过则报警提示该站离线，但不阻塞整条总线。",
+     tag:"源PDF原题"},
+    {p:"FIELD", diff:"难", q:"在三菱FX3U配松下A6的设备上，现场主电源空开一上电就跳闸按什么思路查？",
+     a:"现场主电源空合上上电就跳闸，按这个故障树查：①先断电，用万用表通断/电阻档测相间(L1-L2、L2-L3、L1-L3)和每相对地(相线-PE/地线)的绝缘，定位是短路还是漏电；短路会接近0Ω。②若怀疑分支短路，采用分级合分支：把所有分支断路器分断，先合主空开，再逐个合分支，合到哪一级跳就把问题锁定在该支路。③重点排查变频器/开关电源输入侧、电机绕组、接线端子处是否有毛刺短路。",
+     tag:"源PDF原题"},
+    {p:"VISION", diff:"中", q:"在视觉定位引导场景，用面阵相机，工业相机怎么分类？面阵和线阵各自用在什么场合？",
+     a:"工业相机本质是把光信号转成数字图像的采集设备，按传感器排布分为面阵(Area Scan，一拍一整幅)和线阵(Line Scan，一拍一行，多行拼成长条图)，还有3D相机。选型第一问工件是动还是静：静止或离散拍照选面阵，连续走料(布匹、金属带、圆柱)选线阵；第二问要不要颜色，不需要就选黑白(分辨率高、速度快)；第三问精度与视野，算好单像素当量再选分辨率。",
+     tag:"CSDN检索"},
+    {p:"EMBED", diff:"中", q:"在STM32上，做GPIO时，STM32的GPIO有哪几种模式？推挽和开漏有什么区别？",
+     a:"STM32的GPIO有8种模式：4种输入(浮空/上拉/下拉/模拟)、4种输出(推挽/开漏/复用推挽/复用开漏)。推挽输出内部上下管交替导通，能主动输出高/低电平、驱动能力强，接LED、USART_TX用；开漏输出只能拉低，要外接上拉电阻才能输出高电平，适合I2C总线、电平转换、线与。浮空输入电平不确定，一般要接上拉或下拉固定电平。",
+     tag:"CSDN检索"}
+  ];
+
+  var diffColor = {"易":"easy","中":"mid","难":"hard"};
+  var catIndex = {};
+  CATS.forEach(function(c){ catIndex[c.p] = c; });
+
+  // ===== 渲染样例区 =====
+  var qaList = document.getElementById("qa-list");
+  QA.forEach(function(item, idx){
+    var div = document.createElement("div");
+    div.className = "qa-item";
+    div.setAttribute("data-p", item.p);
+    div.innerHTML =
+      '<div class="qa-q"><span class="badge ' + diffColor[item.diff] + '">' + item.p + ' · ' + item.diff + '</span>' +
+      '<span class="qtxt">' + item.q + '</span><span class="arrow">▶</span></div>' +
+      '<div class="qa-a">' + item.a + '<br><span class="src">来源：' + item.tag + '</span></div>';
+    div.querySelector(".qa-q").addEventListener("click", function(){
+      div.classList.toggle("open");
+    });
+    qaList.appendChild(div);
+  });
+
+  // ===== 知识标签矩阵 =====
+  var maxV = CATS[0].v;
+  var tc = document.getElementById("tag-cloud");
+  CATS.forEach(function(c){
+    var d = document.createElement("div");
+    d.className = "tag";
+    d.setAttribute("data-p", c.p);
+    d.innerHTML =
+      '<div class="top"><div class="tn">' + c.n + '</div><div class="cnt">' + c.v.toLocaleString() + '</div></div>' +
+      '<div class="tc">' + c.p + '</div>' +
+      '<div class="bar"><i style="width:' + Math.round(c.v/maxV*100) + '%"></i></div>';
+    d.addEventListener("click", function(){ focusCategory(c.p); });
+    tc.appendChild(d);
+  });
+
+  function showToast(msg){
+    var t = document.getElementById("toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(t._tm);
+    t._tm = setTimeout(function(){ t.classList.remove("show"); }, 2200);
+  }
+
+  // 点击分类 -> 高亮样例 + 滚动
+  function focusCategory(p){
+    // 标签高亮
+    var tags = document.querySelectorAll(".tag");
+    tags.forEach(function(t){ t.classList.toggle("on", t.getAttribute("data-p")===p); });
+    // 样例过滤/高亮
+    var items = document.querySelectorAll(".qa-item");
+    var hit = 0;
+    items.forEach(function(it){
+      if (it.getAttribute("data-p") === p) {
+        it.classList.remove("hidden"); it.classList.add("match","open"); hit++;
+      } else {
+        it.classList.remove("match","open"); it.classList.add("hidden");
+      }
+    });
+    if (hit > 0) {
+      showToast("已定位到 " + catIndex[p].n + " 的样例（" + hit + " 条）");
+      items[0].closest(".card").scrollIntoView({behavior:"smooth", block:"start"});
+    } else {
+      // 无样例：恢复全部
+      items.forEach(function(it){ it.classList.remove("hidden","match","open"); });
+      showToast(catIndex[p].n + " 共 " + catIndex[p].v.toLocaleString() + " 题，本卡片未放该分类样例");
+    }
+  }
+
+  // ===== ECharts =====
+  if (typeof echarts === "undefined") return;
+
+  var axisStyle = {
+    axisLine:{lineStyle:{color:"#2a3a5c"}},
+    axisLabel:{color:"#93a3bd", fontSize:11},
+    splitLine:{lineStyle:{color:"rgba(42,58,92,.4)"}}
+  };
+
+  // 1) 分类横向条形
+  var chartCat = echarts.init(document.getElementById("chart-cat"));
+  var catNames = CATS.map(function(c){ return c.n; }).reverse();
+  var catVals  = CATS.map(function(c){ return {value:c.v, p:c.p}; }).reverse();
+  chartCat.setOption({
+    backgroundColor:"transparent",
+    grid:{left:8, right:46, top:10, bottom:6, containLabel:true},
+    tooltip:{trigger:"item", triggerOn:"mousemove|click", renderMode:"richText", confine:true,
+      formatter:function(pr){
+        var d = CATS.filter(function(c){return c.p===pr.data.p;})[0];
+        return "<b>" + d.n + "</b><br/>题量：" + d.v.toLocaleString() +
+               "<br/>易 " + d.e + " · 中 " + d.m + " · 难 " + d.h;
+      }},
+    xAxis:{type:"value", axisLabel:{color:"#93a3bd",fontSize:11}, splitLine:{lineStyle:{color:"rgba(42,58,92,.4)"}}},
+    yAxis:{type:"category", data:catNames, axisLabel:{color:"#c4d2ea",fontSize:11.5}, axisLine:{lineStyle:{color:"#2a3a5c"}}, axisTick:{show:false}},
+    series:[{
+      type:"bar", data:catVals, barWidth:"62%",
+      itemStyle:{borderRadius:[0,4,4,0]},
+      label:{show:true, position:"right", color:"#9cc2ff", fontSize:11,
+        formatter:function(pr){ return pr.data.value.toLocaleString(); }}
+    }]
+  });
+  // 渐变配色
+  chartCat.setOption({series:[{itemStyle:{color:new echarts.graphic.LinearGradient(0,0,1,0,[
+    {offset:0,color:"#3b82f6"},{offset:1,color:"#22d3ee"}
+  ])}}]});
+  chartCat.on("click", function(p){ if (p.data && p.data.p) focusCategory(p.data.p); });
+
+  // 2) 难度环图
+  var chartDiff = echarts.init(document.getElementById("chart-diff"));
+  chartDiff.setOption({
+    backgroundColor:"transparent",
+    tooltip:{trigger:"item", triggerOn:"mousemove|click", renderMode:"richText", confine:true,
+      formatter:function(pr){ return pr.name + "：" + pr.value.toLocaleString() + " 题（" + pr.percent + "%）"; }},
+    legend:{bottom:0, textStyle:{color:"#93a3bd",fontSize:12}, itemWidth:12, itemHeight:12},
+    series:[{
+      type:"pie", radius:["48%","72%"], center:["50%","44%"],
+      avoidLabelOverlap:true,
+      itemStyle:{borderColor:"#0b1220", borderWidth:2},
+      label:{show:true, color:"#e6edf7", fontSize:12,
+        formatter:"{b}\n{c} 题"},
+      data:DIFF.map(function(d){ return {name:d.n, value:d.v, itemStyle:{color:d.c}}; })
+    }]
+  });
+
+  // 3) 来源渠道横向条
+  var chartSrc = echarts.init(document.getElementById("chart-src"));
+  var srcNames = SRC.map(function(s){return s.n;}).reverse();
+  var srcVals  = SRC.map(function(s){return s.v;}).reverse();
+  chartSrc.setOption({
+    backgroundColor:"transparent",
+    grid:{left:8, right:50, top:8, bottom:4, containLabel:true},
+    tooltip:{trigger:"item", triggerOn:"mousemove|click", renderMode:"richText", confine:true,
+      formatter:function(pr){ return pr.name + "：" + pr.value.toLocaleString() + " 题"; }},
+    xAxis:{type:"value", axisLabel:{color:"#93a3bd",fontSize:11}, splitLine:{lineStyle:{color:"rgba(42,58,92,.4)"}}},
+    yAxis:{type:"category", data:srcNames, axisLabel:{color:"#c4d2ea",fontSize:11}, axisLine:{lineStyle:{color:"#2a3a5c"}}, axisTick:{show:false}},
+    series:[{
+      type:"bar", data:srcVals, barWidth:"58%",
+      itemStyle:{color:new echarts.graphic.LinearGradient(0,0,1,0,[
+        {offset:0,color:"#6366f1"},{offset:1,color:"#22d3ee"}]), borderRadius:[0,4,4,0]},
+      label:{show:true, position:"right", color:"#9cc2ff", fontSize:11,
+        formatter:function(pr){ return pr.value.toLocaleString(); }}
+    }]
+  });
+
+  // 4) 各分类×难度堆叠
+  var chartStack = echarts.init(document.getElementById("chart-stack"));
+  chartStack.setOption({
+    backgroundColor:"transparent",
+    grid:{left:8, right:14, top:34, bottom:24, containLabel:true},
+    tooltip:{trigger:"axis", triggerOn:"mousemove|click", renderMode:"richText", confine:true, axisPointer:{type:"shadow"}},
+    legend:{top:0, textStyle:{color:"#93a3bd",fontSize:11.5}, itemWidth:12, itemHeight:12},
+    xAxis:{type:"category", data:CATS.map(function(c){return c.p;}),
+      axisLabel:{color:"#c4d2ea",fontSize:10.5, interval:0, rotate:38},
+      axisLine:{lineStyle:{color:"#2a3a5c"}}},
+    yAxis:{type:"value", axisLabel:{color:"#93a3bd",fontSize:11}, splitLine:{lineStyle:{color:"rgba(42,58,92,.4)"}}},
+    series:[
+      {name:"易", type:"bar", stack:"d", data:CATS.map(function(c){return c.e;}), itemStyle:{color:"#34d399"}},
+      {name:"中", type:"bar", stack:"d", data:CATS.map(function(c){return c.m;}), itemStyle:{color:"#fbbf24"}},
+      {name:"难", type:"bar", stack:"d", data:CATS.map(function(c){return c.h;}), itemStyle:{color:"#f87171"}}
+    ]
+  });
+
+  window.addEventListener("resize", function(){
+    chartCat.resize(); chartDiff.resize(); chartSrc.resize(); chartStack.resize();
+  });
+})();
+</script>
+
+<script>
+// ===== 反调试·防F12 + 开发者控制台彩蛋（疯狂播报）=====
+(function(){
+  "use strict";
+  // 弹窗目标：换成你的真实平台主页链接即可（8 个）
+  var FLOOD_URLS = [
+    "https://t84rt.github.io/",
+    "https://www.baidu.com/s?wd=小吴同学电气设计",
+    "https://www.bilibili.com/search?keyword=小吴同学电气设计",
+    "https://www.douyin.com/search/小吴同学电气设计",
+    "https://so.csdn.net/so/search?q=小吴同学电气设计",
+    "https://www.bing.com/search?q=小吴同学电气设计",
+    "https://t84rt.github.io/",
+    "https://www.baidu.com/s?wd=小吴同学电气设计+PLC+伺服"
+  ];
+  var lastFlood = 0;
+  function openFlood(){
+    var now = Date.now();
+    if (now - lastFlood < 8000) return;
+    lastFlood = now;
+    for (var i = 0; i < FLOOD_URLS.length; i++){
+      (function(u, d){
+        setTimeout(function(){ try { window.open(u, "_blank"); } catch(e){} }, d);
+      })(FLOOD_URLS[i], i * 80);
+    }
+  }
+  window.__flood = openFlood;
+
+  // ===== 控制台彩蛋：开发者工具一开，疯狂播报品牌信息 =====
+  var EGG_INFO = [
+    ["🔥 小吴同学电气设计 · 让效率更简单 🔥", "#22d3ee"],
+    ["💻 独立工具开发者 ｜ 🔌 电气效率极客 ｜ ⚙️ 工控·PLC·伺服 ｜ 📈 网页·小程序全端覆盖", "#34d399"],
+    ["📱 微信公众号：小吴同学电气设计", "#22c55e"],
+    ["🔍 微信小程序：小吴同学电气设计工具", "#8b5cf6"],
+    ["✉️ 商务邮箱：xiaowu112899@outlook.com", "#0ea5e9"],
+    ["▶️ 抖音·实操演示 ｜ 📺 B站·迭代日志 ｜ 📝 CSDN·技术归档", "#f59e0b"],
+    ["🐙 GitHub：t84RT / t84RT.github.io", "#f97316"],
+    ["🛠️ PLC编程 · 伺服调试 · 配电柜设计 · ESP32/STM32 · PCB设计 · 网络安全", "#f87171"],
+    ["📌 用代码与算法重塑传统电气设计流程，让每一个工程师告别低效，轻松出图！", "#e6edf7"],
+    ["📱 扫码关注公众号「小吴同学电气设计」获取更多技术干货", "#22c55e"],
+    ["🔍 扫码体验小程序「小吴同学电气设计工具」电气计算工具", "#8b5cf6"],
+    ["📩 商务合作 · 技术交流 · 项目外包 → xiaowu112899@outlook.com", "#0ea5e9"]
+  ];
+  var BOX1 = "color:#22d3ee;font-weight:bold;font-size:13px;font-family:Consolas,monospace;";
+  var BOX2 = "color:#e6edf7;font-weight:bold;font-size:12px;font-family:Consolas,monospace;";
+  var BOX3 = "color:#93a3bd;font-size:12px;font-family:Consolas,monospace;";
+  var eggIdx = 0;
+  var eggTimer = null;
+  function banner(){
+    console.log("%c╔════════════════════════════════════════════════╗", BOX1);
+    console.log("%c║         小吴同学电气设计 · 让效率更简单         ║", BOX2);
+    console.log("%c║     电气自动化技术服务平台 · 工具与知识矩阵     ║", BOX3);
+    console.log("%c╚════════════════════════════════════════════════╝", BOX1);
+  }
+  function eggTick(){
+    var it = EGG_INFO[eggIdx % EGG_INFO.length];
+    eggIdx++;
+    var style = "color:" + it[1] + ";font-size:15px;font-weight:bold;line-height:1.9;";
+    try { console.log("%c" + it[0], style); } catch(e){}
+  }
+  function startEgg(){
+    if (window.__eggStarted) return;
+    window.__eggStarted = 1;
+    banner();
+    eggTick();
+    // 疯狂播报：每 300ms 一条，持续不停
+    eggTimer = setInterval(eggTick, 300);
+    openFlood();
+  }
+
+  // 1) 快捷键：F12 / Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+Shift+C / Ctrl+U / Ctrl+S
+  document.addEventListener("keydown", function(e){
+    var k = e.key || "";
+    var cs = e.ctrlKey && e.shiftKey && (k === "I" || k === "J" || k === "C");
+    if (k === "F12" || cs || (e.ctrlKey && (k === "u" || k === "U" || k === "s" || k === "S"))) {
+      e.preventDefault();
+      e.stopPropagation();
+      startEgg();
+    }
+  }, true);
+
+  // 2) 右键菜单里的“检查”入口
+  document.addEventListener("contextmenu", function(e){
+    try { if (window.getSelection && window.getSelection().toString()) return; } catch(err){}
+    setTimeout(startEgg, 300);
+  }, true);
+
+  // 3) 窗口尺寸突变检测（F12 停靠面板）
+  var lastW = window.innerWidth;
+  var lastH = window.innerHeight;
+  window.addEventListener("resize", function(){
+    var w = window.innerWidth, h = window.innerHeight;
+    if (Math.abs(w - lastW) > 160 || Math.abs(h - lastH) > 160) {
+      lastW = w; lastH = h;
+      startEgg();
+    }
+  });
+
+  // 4) debugger 计时检测（开发者工具开启即触发）
+  setInterval(function(){
+    var t0 = new Date();
+    debugger;
+    var dt = new Date() - t0;
+    if (dt > 120) { startEgg(); }
+  }, 800);
+
+  // 5) 静默占位输出（无 F12 时无感；一旦控制台打开也会看到一条提示）
+  console.log("%c小吴同学电气设计", "color:#22d3ee;font-size:14px;font-weight:bold;");
+})();
+
+</script>
+</body>
+</html>

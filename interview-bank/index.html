@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工控自动化面试题库 · 全量浏览器</title>
+<style>
+  :root{
+    --bg:#0b1220; --bg2:#0f1a2e; --card:#131f36; --card2:#182642;
+    --line:#243352; --txt:#e6edf7; --mut:#93a3bd; --dim:#6b7c99;
+    --cyan:#22d3ee; --blue:#3b82f6; --green:#34d399; --amber:#fbbf24; --red:#f87171;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(160deg,#0b1220 0%,#0d1830 60%,#0b1220 100%);
+    color:var(--txt); line-height:1.6; min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1200px;margin:0 auto;padding:26px 20px 60px}
+
+  header h1{font-size:26px;font-weight:700;letter-spacing:.5px}
+  header h1 .accent{color:var(--cyan)}
+  .eyebrow{color:var(--cyan);font-size:12.5px;letter-spacing:3px;font-weight:600;text-transform:uppercase}
+  .desc{color:var(--mut);font-size:13px;margin-top:6px}
+  .desc b{color:var(--txt)}
+
+  /* 统计条 */
+  .stats{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+  .st{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 16px;font-size:13px}
+  .st b{color:var(--cyan);font-size:17px;margin-right:4px}
+
+  /* 工具栏 */
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center}
+  .toolbar input[type=text]{
+    flex:1 1 260px;background:var(--bg2);border:1px solid var(--line);color:var(--txt);
+    border-radius:10px;padding:10px 14px;font-size:14px;outline:none;transition:.15s;
+  }
+  .toolbar input[type=text]:focus{border-color:var(--cyan)}
+  .toolbar select{
+    background:var(--bg2);border:1px solid var(--line);color:var(--txt);
+    border-radius:10px;padding:10px 12px;font-size:13px;outline:none;cursor:pointer;max-width:220px;
+  }
+  .toolbar .btn{
+    background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);
+    color:var(--txt);border-radius:10px;padding:10px 16px;font-size:13.5px;cursor:pointer;transition:.15s;
+  }
+  .toolbar .btn:hover{border-color:var(--cyan);color:var(--cyan)}
+
+  /* 结果列表 */
+  .result-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px;color:var(--mut)}
+  .result-head b{color:var(--cyan)}
+  .qa{display:flex;flex-direction:column;gap:8px}
+  .qa-item{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;transition:border-color .15s}
+  .qa-item:hover{border-color:#31436b}
+  .qa-q{padding:12px 14px;cursor:pointer;display:flex;gap:10px;align-items:flex-start;font-size:14px}
+  .qa-q .no{flex:0 0 auto;color:var(--dim);font-size:11.5px;font-family:Consolas,monospace;margin-top:3px;min-width:44px}
+  .badge{flex:0 0 auto;font-size:11px;padding:2px 8px;border-radius:6px;background:rgba(59,130,246,.18);
+    color:#9cc2ff;border:1px solid rgba(59,130,246,.35);white-space:nowrap;margin-top:2px}
+  .badge.hard{background:rgba(248,113,113,.15);color:#fca5a5;border-color:rgba(248,113,113,.35)}
+  .badge.mid{background:rgba(251,191,36,.15);color:#fcd34d;border-color:rgba(251,191,36,.35)}
+  .badge.easy{background:rgba(52,211,153,.15);color:#6ee7b7;border-color:rgba(52,211,153,.35)}
+  .qa-q .qtxt{flex:1}
+  .qa-q .arrow{flex:0 0 auto;color:var(--dim);transition:.2s;margin-top:2px}
+  .qa-item.open .arrow{transform:rotate(90deg)}
+  .qa-a{display:none;padding:0 14px 14px 14px;font-size:13.5px;color:#c8d6ee;border-top:1px dashed var(--line);white-space:pre-wrap;word-break:break-word}
+  .qa-item.open .qa-a{display:block;padding-top:12px}
+  .qa-a .src{display:inline-block;margin-top:10px;font-size:11.5px;color:var(--dim);background:#0d1830;padding:2px 8px;border-radius:5px}
+
+  /* 分页 */
+  .pager{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:18px;flex-wrap:wrap}
+  .pager .btn{background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:8px;
+    padding:7px 14px;font-size:13px;cursor:pointer;transition:.15s}
+  .pager .btn:hover:not(:disabled){border-color:var(--cyan);color:var(--cyan)}
+  .pager .btn:disabled{opacity:.35;cursor:not-allowed}
+  .pager .pageinfo{font-size:13px;color:var(--mut)}
+
+  /* 加载遮罩 */
+  #loading{position:fixed;inset:0;background:rgba(11,18,32,.96);display:flex;flex-direction:column;
+    justify-content:center;align-items:center;z-index:99;gap:16px}
+  #loading .bar{width:340px;height:8px;border-radius:4px;background:#1c2b4a;overflow:hidden}
+  #loading .bar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .2s}
+  #loading .txt{font-size:14px;color:var(--mut)}
+  #loading .txt b{color:var(--cyan)}
+  #toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);
+    background:#1c2b4a;border:1px solid var(--cyan);color:var(--txt);padding:9px 18px;border-radius:10px;
+    font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:98;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .empty{padding:60px 0;text-align:center;color:var(--dim);font-size:14px}
+
+  /* ===== 关于 小吴同学电气设计 ===== */
+  .about{margin-top:34px;border-top:1px solid var(--line);padding-top:24px}
+  .about-head{display:flex;align-items:center;gap:14px}
+  .about-logo{width:54px;height:54px;border-radius:15px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:27px;
+    background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(139,92,246,.18));border:1px solid var(--line)}
+  .about-name{font-size:19px;font-weight:700;letter-spacing:.3px}
+  .about-slogan{font-size:12.5px;color:var(--mut);margin-top:2px}
+  .about-badges{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0 14px}
+  .ab{font-size:11.5px;padding:3px 11px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);color:var(--cyan)}
+  .about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .about-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .ac-title{font-size:13px;font-weight:600;color:var(--cyan);margin-bottom:9px}
+  .ac-mail{font-size:14.5px;color:#0ea5e9;font-weight:600;word-break:break-all}
+  .ac-sub{font-size:12px;color:var(--mut);margin-top:7px;line-height:1.75}
+  .qr-img{width:124px;height:124px;border-radius:10px;border:1px solid var(--line);display:block;margin:0 auto 9px;background:#fff}
+  .ac-name{text-align:center;font-size:13.5px;font-weight:600}
+  .about-card.qr .ac-title{text-align:center}
+  .about-card.qr .ac-sub{text-align:center}
+  .ac-plats{display:flex;flex-direction:column;gap:7px;font-size:12.5px;color:var(--mut)}
+  .ac-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+  .ac-tags span{font-size:11px;padding:2px 9px;border-radius:6px;background:var(--bg2);border:1px solid var(--line);color:#c8d6ee}
+  /* 公众号横幅卡 */
+  .about-card.gzh{grid-column:1/-1;text-align:center;padding:16px 18px}
+  .gzh-img{width:100%;max-width:540px;height:auto;border-radius:10px;border:1px solid var(--line);display:block;margin:0 auto}
+  .about-foot{margin-top:15px;font-size:11.5px;color:var(--dim);text-align:center}
+  @media(max-width:980px){.about-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.about-grid{grid-template-columns:1fr}}
+
+  /* ===== 密码门 ===== */
+  #gate{position:fixed;inset:0;z-index:100;background:linear-gradient(160deg,#0b1220 0%,#0d1830 60%,#0b1220 100%);
+    display:flex;align-items:center;justify-content:center}
+  #gate .gbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:34px 40px;
+    width:min(420px,90vw);text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  #gate .glock{font-size:34px}
+  #gate h2{font-size:19px;margin:10px 0 4px}
+  #gate .gsub{font-size:12.5px;color:var(--mut);margin-bottom:18px}
+  #gate input{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--txt);
+    border-radius:10px;padding:11px 14px;font-size:15px;outline:none;text-align:center;letter-spacing:2px}
+  #gate input:focus{border-color:var(--cyan)}
+  #gate .gbtn{width:100%;margin-top:12px;background:linear-gradient(90deg,var(--blue),var(--cyan));
+    color:#06121f;font-weight:700;border:none;border-radius:10px;padding:11px;font-size:15px;cursor:pointer;transition:.15s}
+  #gate .gbtn:hover{filter:brightness(1.1)}
+  #gate .gerr{color:var(--red);font-size:12.5px;margin-top:10px;min-height:18px}
+  #gate .ghint{font-size:11px;color:var(--dim);margin-top:14px}
+</style>
+<!-- ANTI_AI_BOT -->
+<script>
+// ===== 反AI抓取·无头浏览器/爬虫检测（早期阻断，不给任何内容）=====
+(function(){
+  try {
+    var ua = (navigator.userAgent || "").toLowerCase();
+    var BAD_UA = /headless|phantom|puppeteer|playwright|selenium|pyppeteer|spider|crawler|scrapy|curl|wget|axios|node-fetch|go-http|python-requests|httpx/i.test(ua);
+    var webdriver = !!navigator.webdriver;
+    if (BAD_UA || webdriver) {
+      // 伪装成"页面加载失败"：不输出密码门、不输出数据、不初始化任何逻辑
+      var root = document.documentElement;
+      root.innerHTML = '<head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"></head><body style="margin:0;background:#0b1220;color:#64748b;font-family:\'Segoe UI\',sans-serif;display:flex;align-items:center;justify-content:center;height:100vh"><div style="text-align:center"><h2 style="font-weight:400">页面加载失败</h2><p>请使用现代浏览器访问。</p><p style="font-size:12px;opacity:.6">Error 403</p></div></body>';
+      try { history.replaceState(null, "", location.pathname); } catch(e){}
+      window.stop && window.stop();
+    }
+  } catch(e){}
+})();
+</script>
+<!-- /ANTI_AI_BOT -->
+</head>
+<body>
+<div class="wrap">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:13px;flex-wrap:wrap;gap:8px">
+    <a href="../" style="color:var(--cyan);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;background:var(--card)">← 返回 小吴同学电气设计 主页</a>
+    <a href="statistics.html" style="color:var(--mut);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;background:var(--card)">📊 题库数据看板</a>
+  </div>
+  <header>
+    <div class="eyebrow">INDUSTRIAL AUTOMATION · QUESTION BANK BROWSER</div>
+    <h1>工控自动化面试题库 <span class="accent">全量浏览器</span></h1>
+    <p class="desc">全部 <b>50,042 条</b> Q&amp;A 已内置本页面（数据在 <b>data/</b> 目录分片加载），支持关键词搜索、分类/难度筛选、分页浏览，点击任意题目展开答案。</p>
+  </header>
+
+  <div class="stats">
+    <div class="st">总题量 <b id="st-total">…</b></div>
+    <div class="st">当前结果 <b id="st-filter">…</b></div>
+    <div class="st">分类 <b id="st-cat">15</b></div>
+    <div class="st">真实独立题 <b>15,942</b></div>
+    <div class="st">知识变体 <b>34,100</b></div>
+  </div>
+
+  <div class="toolbar">
+    <input type="text" id="kw" placeholder="搜索：输入关键词（问题/答案/来源），如 伺服、Modbus、ST语言、空开跳闸…" autocomplete="off">
+    <select id="sel-cat"><option value="">全部分类（15）</option></select>
+    <select id="sel-diff"><option value="">全部难度</option><option>易</option><option>中</option><option>难</option></select>
+    <select id="sel-src"><option value="">全部来源</option></select>
+    <button class="btn" id="btn-reset">重置</button>
+  </div>
+
+  <div class="result-head">
+    <span id="range-info"></span>
+    <span>点击题目可展开/收起答案</span>
+  </div>
+
+  <div class="qa" id="qa-list"></div>
+  <div class="empty" id="empty" style="display:none">没有匹配的题目，换个关键词试试</div>
+
+  <div class="pager" id="pager"></div>
+
+  <!-- ===== 关于 小吴同学电气设计 ===== -->
+  <div class="about">
+    <div class="about-head">
+      <div class="about-logo">⚡</div>
+      <div>
+        <div class="about-name">小吴同学电气设计</div>
+        <div class="about-slogan">用代码与算法重塑传统电气设计流程 · 让每一个工程师告别低效，轻松出图！</div>
+      </div>
+    </div>
+    <div class="about-badges">
+      <span class="ab">💻 独立工具开发者</span>
+      <span class="ab">🔌 电气效率极客</span>
+      <span class="ab">⚙️ 工控·PLC·伺服</span>
+      <span class="ab">📈 网页·小程序全端覆盖</span>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="ac-title">✉️ 商务 / 技术交流</div>
+        <div class="ac-mail">xiaowu112899@outlook.com</div>
+        <div class="ac-sub">商务合作 · 技术交流 · 项目外包<br>PLC程序修改 / 外包 / 解密 / HMI书写 · 电工维修 · 嵌入式开发</div>
+      </div>
+      <div class="about-card qr">
+        <div class="ac-title">🔍 微信小程序</div>
+        <img src="assets/mini-qr.png" alt="小程序码" class="qr-img">
+        <div class="ac-name">小吴同学电气设计工具</div>
+        <div class="ac-sub">扫码体验电气计算工具</div>
+      </div>
+      <div class="about-card">
+        <div class="ac-title">🌐 平台矩阵</div>
+        <div class="ac-plats">
+          <span>▶️ 抖音 · 实操演示</span>
+          <span>📺 B站 · 迭代日志</span>
+          <span>📝 CSDN · 技术归档</span>
+          <span>🐙 GitHub · @t84RT</span>
+        </div>
+        <div class="ac-title" style="margin-top:13px">🛠️ 服务方向</div>
+        <div class="ac-tags">
+          <span>PLC编程</span><span>伺服调试</span><span>配电柜设计</span>
+          <span>电气计算工具</span><span>DataHarvest Pro</span><span>ESP32/STM32</span>
+          <span>PCB设计</span><span>网络安全</span>
+        </div>
+      </div>
+    </div>
+    <div class="about-card gzh">
+      <div class="ac-title">📱 微信公众号</div>
+      <img src="assets/gzh-qr.png" alt="公众号二维码" class="gzh-img">
+      <div class="ac-name" style="margin-top:10px">小吴同学电气设计</div>
+      <div class="ac-sub">扫码关注获取更多技术干货 · 微信搜一搜：小吴同学电气设计</div>
+    </div>
+    <div class="about-foot">© 2026 小吴同学电气设计 · 让效率更简单 · 主流品牌支持：西门子 / 三菱 / 欧姆龙 / 汇川</div>
+  </div>
+</div>
+
+<!-- ===== 密码门（验证通过前不加载题库数据）===== -->
+<div id="gate">
+  <div class="gbox">
+    <div class="glock">🔒</div>
+    <h2>工控面试题库 · 访问保护</h2>
+    <div class="gsub">本题库内容受密码保护，请输入访问密码进入</div>
+    <input type="password" id="g-pwd" placeholder="请输入密码" autocomplete="off">
+    <button class="gbtn" id="g-btn">进入题库</button>
+    <div class="gerr" id="g-err"></div>
+    <div class="ghint">提示：访问密码请通过网站主理人获取</div>
+  </div>
+</div>
+
+<div id="loading">
+  <div style="font-size:18px;color:#e6edf7;font-weight:600">正在加载题库数据…</div>
+  <div class="bar"><i id="load-bar"></i></div>
+  <div class="txt" id="load-txt">0 / 12 分片（数据约 70MB，首次加载需几秒，请稍候）</div>
+</div>
+<div id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ===== WebCrypto 加密参数（与构建脚本一致：PBKDF2 + AES-256-GCM）=====
+  var SALT = new Uint8Array([0x67,0x6f,0x6e,0x67,0x6b,0x6f,0x6e,0x67,0x2d,0x69,0x6e,0x74,0x65,0x72,0x76,0x69,0x65,0x77,0x2d,0x62,0x61,0x6e,0x6b,0x2d,0x32,0x30,0x32,0x36]);
+  var ITER = 100000;
+  var CHUNKS = 12;           // 分片数
+  var CHUNK_FILES = ["YmtfMTI4OTQ0ZjcuanM=","YmtfYWM2MWM0OWMuanM=","YmtfMWY1NmY5Y2EuanM=","YmtfY2M3Mzc3YjAuanM=","YmtfYzY3ODVjMDEuanM=","YmtfNDU4NTMxZjUuanM=","YmtfMjQ4MDViNDguanM=","YmtfZDZiYTZkM2EuanM=","YmtfYmY1NDE2YTguanM=","YmtfMmMwNjY2ZjIuanM=","YmtfNDFkMDk0NjcuanM=","YmtfMjQ0OGEyYjYuanM="]; // 分片随机名映射（base64，防按规律爬取）
+  var PAGE = 40;             // 每页条数
+  var ALL = [];              // 解密后的全量数据
+  var ENC = {};              // 加密块 {iv,d}
+  var pendingKey = null;     // 密码派生的解密密钥
+  var loaded = 0;
+
+  // ===== 工具函数 =====
+  function hexToBytes(h){
+    var r = new Uint8Array(h.length / 2);
+    for (var i = 0; i < h.length; i += 2) r[i/2] = parseInt(h.substr(i, 2), 16);
+    return r;
+  }
+  function b64ToBytes(b){
+    var bin = atob(b), u = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+    return u;
+  }
+  async function deriveKey(pwd){
+    var km = await crypto.subtle.importKey("raw", new TextEncoder().encode(pwd), "PBKDF2", false, ["deriveKey"]);
+    return crypto.subtle.deriveKey(
+      {name:"PBKDF2", salt:SALT, iterations:ITER, hash:"SHA-256"},
+      km, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+  }
+  async function decryptChunk(i){
+    var blk = ENC[i];
+    var pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:hexToBytes(blk.iv)}, pendingKey, b64ToBytes(blk.d));
+    return JSON.parse(new TextDecoder().decode(pt));
+  }
+
+  // ===== 密码门（密码正确 → 派生密钥 → 加载并解密数据）=====
+  function gateError(msg){
+    var err = document.getElementById("g-err");
+    err.textContent = msg;
+    document.getElementById("g-pwd").value = "";
+    document.getElementById("g-pwd").focus();
+  }
+  async function tryEnter(){
+    var v = document.getElementById("g-pwd").value;
+    if(!v){ gateError("请输入密码"); return; }
+    try {
+      pendingKey = await deriveKey(v);
+      document.getElementById("gate").style.display = "none";
+      loadChunk(0);
+    } catch(e){ gateError("密码错误，请重试"); }
+  }
+  document.getElementById("g-btn").addEventListener("click", tryEnter);
+  document.getElementById("g-pwd").addEventListener("keydown", function(e){
+    if(e.key === "Enter") tryEnter();
+  });
+  document.getElementById("g-pwd").focus();
+
+  // ===== 加载加密分片（script 标签，本地 file:// 可用）=====
+  function loadChunk(i){
+    var s = document.createElement("script");
+    s.src = "data/" + atob(CHUNK_FILES[i]);
+    s.onload = function(){
+      var blk = window.__BK_ENC__ && window.__BK_ENC__[i];
+      if(!blk){
+        document.getElementById("load-txt").textContent = "分片 " + i + " 数据异常，请确认 data 目录完整";
+        document.getElementById("load-txt").style.color = "#f87171";
+        return;
+      }
+      ENC[i] = blk;
+      loaded++;
+      var pct = Math.round(loaded/CHUNKS*100);
+      document.getElementById("load-bar").style.width = pct + "%";
+      document.getElementById("load-txt").textContent = loaded + " / " + CHUNKS + " 分片已加载（" + pct + "%）";
+      if (loaded < CHUNKS) { loadChunk(loaded); }
+      else { startDecrypt(); }
+    };
+    s.onerror = function(){
+      document.getElementById("load-txt").textContent = "分片 " + i + " 加载失败：请确认 data 文件夹与本 HTML 在同一目录，且未被移动/删除";
+      document.getElementById("load-txt").style.color = "#f87171";
+    };
+    document.head.appendChild(s);
+  }
+
+  // ===== 全部加载完成后：逐分片解密（密码错误会在解密时失败）=====
+  async function startDecrypt(){
+    try {
+      for (var i = 0; i < CHUNKS; i++){
+        var arr = await decryptChunk(i);
+        ALL = ALL.concat(arr);
+        var pct = Math.round((i+1)/CHUNKS*100);
+        document.getElementById("load-bar").style.width = pct + "%";
+        document.getElementById("load-txt").textContent = "解密中 " + (i+1) + " / " + CHUNKS + "（" + pct + "%）";
+      }
+      var total = document.getElementById("st-total");
+      total.textContent = ALL.length.toLocaleString();
+      document.getElementById("loading").style.display = "none";
+      initFilters();
+      applyFilter();
+    } catch(e){
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("gate").style.display = "flex";
+      gateError("密码错误，请重试");
+    }
+  }
+
+  // ===== 筛选条件 =====
+  var CATS = [["DDQ","电气基础与元件"],["SENSOR","传感器与检测"],["LANG","PLC编程语言与基础"],
+    ["DEBUG","程序调试与故障排查"],["MOTION","运动控制(伺服/步进)"],["DRIVE","变频器与电机驱动"],
+    ["SAFETY","工业电气安全与网络"],["COMM","通讯协议与组网"],["HMI","触摸屏HMI与上位机"],
+    ["FIELD","现场调试与故障排查"],["VISION","机器视觉"],["ROBOT","工业机器人"],
+    ["EMBED","嵌入式(ESP32/STM32)"],["SOFT","面试综合与软技能"],["ELECDESIGN","电气设计与图纸"]];
+  var SRC_LIST = [];
+  var cur = {kw:"", cat:"", diff:"", src:""};
+  var page = 1;
+  var result = [];
+
+  function initFilters(){
+    var sc = document.getElementById("sel-cat");
+    CATS.forEach(function(c){
+      var o = document.createElement("option");
+      o.value = c[0]; o.textContent = c[0] + " " + c[1];
+      sc.appendChild(o);
+    });
+    var ss = document.getElementById("sel-src");
+    var counter = {};
+    ALL.forEach(function(r){ var k = r[4]; counter[k] = (counter[k]||0)+1; });
+    var arr = Object.keys(counter).sort(function(a,b){ return counter[b]-counter[a]; });
+    arr.forEach(function(k){
+      var o = document.createElement("option");
+      o.value = k; o.textContent = k + "（" + counter[k].toLocaleString() + "）";
+      ss.appendChild(o);
+    });
+    SRC_LIST = arr;
+  }
+
+  function applyFilter(){
+    var kw = cur.kw.trim().toLowerCase();
+    var cat = cur.cat, diff = cur.diff, src = cur.src;
+    result = [];
+    var push = result;
+    for (var i = 0; i < ALL.length; i++){
+      var r = ALL[i];
+      if (cat && r[0] !== cat) continue;
+      if (diff && r[1] !== diff) continue;
+      if (src && r[4] !== src) continue;
+      if (kw){
+        var hit = r[2].toLowerCase().indexOf(kw) >= 0 ||
+                  r[3].toLowerCase().indexOf(kw) >= 0 ||
+                  r[4].toLowerCase().indexOf(kw) >= 0;
+        if (!hit) continue;
+      }
+      push.push(r);
+    }
+    page = 1;
+    render();
+  }
+
+  function render(){
+    var total = result.length;
+    document.getElementById("st-filter").textContent = total.toLocaleString();
+    var pages = Math.max(1, Math.ceil(total / PAGE));
+    if (page > pages) page = pages;
+    var start = (page-1) * PAGE;
+    var end = Math.min(total, start + PAGE);
+    document.getElementById("range-info").textContent = total === 0 ? "0 条" :
+      "第 " + (start+1).toLocaleString() + " - " + end.toLocaleString() + " 条 / 共 " + total.toLocaleString() + " 条";
+
+    var box = document.getElementById("qa-list");
+    box.innerHTML = "";
+    document.getElementById("empty").style.display = total === 0 ? "block" : "none";
+
+    for (var i = start; i < end; i++){
+      var r = result[i];
+      var div = document.createElement("div");
+      div.className = "qa-item";
+      var cls = r[1]==="难"?"hard":(r[1]==="中"?"mid":"easy");
+      var q = document.createElement("div");
+      q.className = "qa-q";
+      q.innerHTML = '<span class="no">#' + (i+1) + '</span>' +
+        '<span class="badge ' + cls + '">' + r[0] + ' · ' + r[1] + '</span>' +
+        '<span class="qtxt"></span><span class="arrow">▶</span>';
+      q.querySelector(".qtxt").textContent = r[2];
+      q.addEventListener("click", function(){ this.parentNode.classList.toggle("open"); });
+      var a = document.createElement("div");
+      a.className = "qa-a";
+      var at = document.createElement("span");
+      at.textContent = r[3];
+      var src = document.createElement("div");
+      src.className = "src";
+      src.textContent = "来源：" + r[4];
+      a.appendChild(at); a.appendChild(src);
+      div.appendChild(q); div.appendChild(a);
+      box.appendChild(div);
+    }
+
+    // 分页
+    var pg = document.getElementById("pager");
+    pg.innerHTML = "";
+    function btn(label, disabled, fn){
+      var b = document.createElement("button");
+      b.className = "btn"; b.textContent = label; b.disabled = !!disabled;
+      b.addEventListener("click", fn);
+      pg.appendChild(b);
+    }
+    btn("‹ 上一页", page <= 1, function(){ page--; render(); window.scrollTo({top:0,behavior:"smooth"}); });
+    var pi = document.createElement("span");
+    pi.className = "pageinfo";
+    pi.textContent = page + " / " + pages;
+    pg.appendChild(pi);
+    btn("下一页 ›", page >= pages, function(){ page++; render(); window.scrollTo({top:0,behavior:"smooth"}); });
+  }
+
+  // ===== 事件 =====
+  var kwInput = document.getElementById("kw");
+  var debounce = null;
+  kwInput.addEventListener("input", function(){
+    clearTimeout(debounce);
+    var v = this.value;
+    debounce = setTimeout(function(){ cur.kw = v; applyFilter(); }, 280);
+  });
+  document.getElementById("sel-cat").addEventListener("change", function(){ cur.cat = this.value; applyFilter(); });
+  document.getElementById("sel-diff").addEventListener("change", function(){ cur.diff = this.value; applyFilter(); });
+  document.getElementById("sel-src").addEventListener("change", function(){ cur.src = this.value; applyFilter(); });
+  document.getElementById("btn-reset").addEventListener("click", function(){
+    kwInput.value = ""; cur.kw=""; cur.cat=""; cur.diff=""; cur.src="";
+    document.getElementById("sel-cat").value="";
+    document.getElementById("sel-diff").value="";
+    document.getElementById("sel-src").value="";
+    applyFilter();
+  });
+})();
+</script>
+
+<script>
+// ===== 反调试·防F12 + 开发者控制台彩蛋（疯狂播报）=====
+(function(){
+  "use strict";
+  // 弹窗目标：换成你的真实平台主页链接即可（8 个）
+  var FLOOD_URLS = [
+    "https://t84rt.github.io/",
+    "https://www.baidu.com/s?wd=小吴同学电气设计",
+    "https://www.bilibili.com/search?keyword=小吴同学电气设计",
+    "https://www.douyin.com/search/小吴同学电气设计",
+    "https://so.csdn.net/so/search?q=小吴同学电气设计",
+    "https://www.bing.com/search?q=小吴同学电气设计",
+    "https://t84rt.github.io/",
+    "https://www.baidu.com/s?wd=小吴同学电气设计+PLC+伺服"
+  ];
+  var lastFlood = 0;
+  function openFlood(){
+    var now = Date.now();
+    if (now - lastFlood < 8000) return;
+    lastFlood = now;
+    for (var i = 0; i < FLOOD_URLS.length; i++){
+      (function(u, d){
+        setTimeout(function(){ try { window.open(u, "_blank"); } catch(e){} }, d);
+      })(FLOOD_URLS[i], i * 80);
+    }
+  }
+  window.__flood = openFlood;
+
+  // ===== 控制台彩蛋：开发者工具一开，疯狂播报品牌信息 =====
+  var EGG_INFO = [
+    ["🔥 小吴同学电气设计 · 让效率更简单 🔥", "#22d3ee"],
+    ["💻 独立工具开发者 ｜ 🔌 电气效率极客 ｜ ⚙️ 工控·PLC·伺服 ｜ 📈 网页·小程序全端覆盖", "#34d399"],
+    ["📱 微信公众号：小吴同学电气设计", "#22c55e"],
+    ["🔍 微信小程序：小吴同学电气设计工具", "#8b5cf6"],
+    ["✉️ 商务邮箱：xiaowu112899@outlook.com", "#0ea5e9"],
+    ["▶️ 抖音·实操演示 ｜ 📺 B站·迭代日志 ｜ 📝 CSDN·技术归档", "#f59e0b"],
+    ["🐙 GitHub：t84RT / t84RT.github.io", "#f97316"],
+    ["🛠️ PLC编程 · 伺服调试 · 配电柜设计 · ESP32/STM32 · PCB设计 · 网络安全", "#f87171"],
+    ["📌 用代码与算法重塑传统电气设计流程，让每一个工程师告别低效，轻松出图！", "#e6edf7"],
+    ["📱 扫码关注公众号「小吴同学电气设计」获取更多技术干货", "#22c55e"],
+    ["🔍 扫码体验小程序「小吴同学电气设计工具」电气计算工具", "#8b5cf6"],
+    ["📩 商务合作 · 技术交流 · 项目外包 → xiaowu112899@outlook.com", "#0ea5e9"]
+  ];
+  var BOX1 = "color:#22d3ee;font-weight:bold;font-size:13px;font-family:Consolas,monospace;";
+  var BOX2 = "color:#e6edf7;font-weight:bold;font-size:12px;font-family:Consolas,monospace;";
+  var BOX3 = "color:#93a3bd;font-size:12px;font-family:Consolas,monospace;";
+  var eggIdx = 0;
+  var eggTimer = null;
+  function banner(){
+    console.log("%c╔════════════════════════════════════════════════╗", BOX1);
+    console.log("%c║         小吴同学电气设计 · 让效率更简单         ║", BOX2);
+    console.log("%c║     电气自动化技术服务平台 · 工具与知识矩阵     ║", BOX3);
+    console.log("%c╚════════════════════════════════════════════════╝", BOX1);
+  }
+  function eggTick(){
+    var it = EGG_INFO[eggIdx % EGG_INFO.length];
+    eggIdx++;
+    var style = "color:" + it[1] + ";font-size:15px;font-weight:bold;line-height:1.9;";
+    try { console.log("%c" + it[0], style); } catch(e){}
+  }
+  function startEgg(){
+    if (window.__eggStarted) return;
+    window.__eggStarted = 1;
+    banner();
+    eggTick();
+    // 疯狂播报：每 300ms 一条，持续不停
+    eggTimer = setInterval(eggTick, 300);
+    openFlood();
+  }
+
+  // 1) 快捷键：F12 / Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+Shift+C / Ctrl+U / Ctrl+S
+  document.addEventListener("keydown", function(e){
+    var k = e.key || "";
+    var cs = e.ctrlKey && e.shiftKey && (k === "I" || k === "J" || k === "C");
+    if (k === "F12" || cs || (e.ctrlKey && (k === "u" || k === "U" || k === "s" || k === "S"))) {
+      e.preventDefault();
+      e.stopPropagation();
+      startEgg();
+    }
+  }, true);
+
+  // 2) 右键菜单里的“检查”入口
+  document.addEventListener("contextmenu", function(e){
+    try { if (window.getSelection && window.getSelection().toString()) return; } catch(err){}
+    setTimeout(startEgg, 300);
+  }, true);
+
+  // 3) 窗口尺寸突变检测（F12 停靠面板）
+  var lastW = window.innerWidth;
+  var lastH = window.innerHeight;
+  window.addEventListener("resize", function(){
+    var w = window.innerWidth, h = window.innerHeight;
+    if (Math.abs(w - lastW) > 160 || Math.abs(h - lastH) > 160) {
+      lastW = w; lastH = h;
+      startEgg();
+    }
+  });
+
+  // 4) debugger 计时检测（开发者工具开启即触发）
+  setInterval(function(){
+    var t0 = new Date();
+    debugger;
+    var dt = new Date() - t0;
+    if (dt > 120) { startEgg(); }
+  }, 800);
+
+  // 5) 静默占位输出（无 F12 时无感；一旦控制台打开也会看到一条提示）
+  console.log("%c小吴同学电气设计", "color:#22d3ee;font-size:14px;font-weight:bold;");
+})();
+
+</script>
+</body>
+</html>
